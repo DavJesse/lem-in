@@ -76,7 +76,7 @@ func TestParseInput(t *testing.T) {
 	}
 }
 
-func TestParseInputEmptyFile(t *testing.T) {
+func TestParseInput_EmptyFile(t *testing.T) {
 	// Create a temporary empty file
 	tmpfile, err := os.CreateTemp("", "empty_test_file")
 	if err != nil {
@@ -103,5 +103,35 @@ func TestParseInputEmptyFile(t *testing.T) {
 	}
 	if len(links) != 0 {
 		t.Errorf("Expected 0 links for empty file, got: %d", len(links))
+	}
+}
+
+func TestParseInput_InvalidAnts(t *testing.T) {
+	// Create a temporary file with invalid input
+	tmpfile, err := os.CreateTemp("", "test_invalid_ants")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(tmpfile.Name())
+
+	// Write invalid input to the file
+	_, err = tmpfile.WriteString("0\n")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tmpfile.Close()
+
+	// Call parseInput with the temporary file
+	ants, rooms, links, err := input.ParseInput(tmpfile.Name())
+
+	// Check the results
+	if err == nil {
+		t.Error("Expected an error, but got nil")
+	}
+	if ants != 0 || rooms != nil || links != nil {
+		t.Errorf("Expected (0, nil, nil) for invalid input, but got (%d, %v, %v)", ants, rooms, links)
+	}
+	if err.Error() != "invalid number of ants" {
+		t.Errorf("Expected error message 'invalid number of ants', but got '%s'", err.Error())
 	}
 }
