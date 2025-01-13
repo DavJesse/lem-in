@@ -232,3 +232,67 @@ middle-end
 		t.Errorf("Expected end room name to be 'end', got '%s'", endRoom.Name)
 	}
 }
+
+func TestParseInput_IgnoresCommentsAndEmptyLines(t *testing.T) {
+	// Create a temporary file with test input
+	tmpfile, err := os.CreateTemp("", "test_input_*.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(tmpfile.Name())
+
+	// Write test input to the temporary file
+	testInput := `5
+# This is a comment
+##start
+room1 0 1
+##end
+room2 2 0
+
+# Another comment
+room3 1 1
+
+room1-room2
+room1-room3
+`
+	if _, err := tmpfile.Write([]byte(testInput)); err != nil {
+		t.Fatal(err)
+	}
+	if err := tmpfile.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	// Call parseInput with the temporary file
+	ants, rooms, links, err := file_parse.ParseInput(tmpfile.Name())
+	// Check for errors
+	if err != nil {
+		t.Fatalf("parseInput returned an error: %v", err)
+	}
+
+	// Check the number of ants
+	if ants != 5 {
+		t.Errorf("Expected 5 ants, got %d", ants)
+	}
+
+	// Check the number of rooms
+	expectedRooms := 3
+	if len(rooms) != expectedRooms {
+		t.Errorf("Expected %d rooms, got %d", expectedRooms, len(rooms))
+	}
+
+	// Check the number of links
+	expectedLinks := 2
+	if len(links) != expectedLinks {
+		t.Errorf("Expected %d links, got %d", expectedLinks, len(links))
+	}
+
+	// Check if start and end rooms are correctly marked
+	for _, room := range rooms {
+		if room.Name == "room1" && !room.IsStart {
+			t.Errorf("Expected room1 to be marked as start")
+		}
+		if room.Name == "room2" && !room.IsEnd {
+			t.Errorf("Expected room2 to be marked as end")
+		}
+	}
+}
