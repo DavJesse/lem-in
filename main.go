@@ -21,7 +21,7 @@ type Link struct {
 	capacity int
 }
 
-func parseInput(filename string) (int, []Room, []Link, error) {
+func ParseInput(filename string) (int, []Room, []Link, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return 0, nil, nil, err
