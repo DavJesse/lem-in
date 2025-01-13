@@ -183,3 +183,52 @@ func findStartRoom(rooms []file_parse.Room) *file_parse.Room {
 	}
 	return nil
 }
+
+func TestParse_InputEndRoom(t *testing.T) {
+	// Create a temporary file with test input
+	tmpfile, err := os.CreateTemp("", "test_input_*.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(tmpfile.Name())
+
+	// Write test data to the temporary file
+	testInput := `3
+##start
+start 0 1
+middle 1 1
+##end
+end 2 1
+start-middle
+middle-end
+`
+	if _, err := tmpfile.Write([]byte(testInput)); err != nil {
+		t.Fatal(err)
+	}
+	if err := tmpfile.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	// Call parseInput with the temporary file
+	ants, rooms, _, err := file_parse.ParseInput(tmpfile.Name())
+	// Check for errors
+	if err != nil {
+		t.Fatalf("parseInput returned an error: %v", err)
+	}
+
+	// Check if the number of ants is correct
+	if ants != 3 {
+		t.Errorf("Expected 3 ants, got %d", ants)
+	}
+
+	// Check if the end room is correctly marked
+	endRoom := rooms[2] // Assuming the end room is the last one added
+	if !endRoom.IsEnd {
+		t.Errorf("End room not correctly marked: %+v", endRoom)
+	}
+
+	// Check if the end room has the correct name
+	if endRoom.Name != "end" {
+		t.Errorf("Expected end room name to be 'end', got '%s'", endRoom.Name)
+	}
+}
