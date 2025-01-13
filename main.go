@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"lemin/input"
+	"lemin/file_parse"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 	}
 
 	// Parse input
-	ants, rooms, links, err := input.ParseInput(os.Args[1])
+	ants, rooms, links, err := file_parse.ParseInput(os.Args[1])
 	fmt.Println(ants)
 	fmt.Println(rooms)
 	fmt.Println(links)

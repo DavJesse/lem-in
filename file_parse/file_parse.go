@@ -1,4 +1,4 @@
-package input
+package file_parse
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 
 type Room struct {
 	Name    string
-	x, Y    int
+	X, Y    int
 	IsStart bool
 	IsEnd   bool
 }
@@ -72,7 +72,7 @@ func ParseInput(filename string) (int, []Room, []Link, error) {
 			y, _ := strconv.Atoi(parts[2])
 			rooms = append(rooms, Room{
 				Name:    parts[0],
-				x:       x,
+				X:       x,
 				Y:       y,
 				IsStart: nextIsStart,
 				IsEnd:   nextIsEnd,

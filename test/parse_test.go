@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"lemin/input"
+	"lemin/file_parse"
 )
 
 func TestParseInput(t *testing.T) {
@@ -32,7 +32,7 @@ func TestParseInput(t *testing.T) {
 	}
 
 	// Call parseInput with the temporary file
-	ants, rooms, links, err := input.ParseInput(tmpfile.Name())
+	ants, rooms, links, err := file_parse.ParseInput(tmpfile.Name())
 	// Check for errors
 	if err != nil {
 		t.Errorf("parseInput returned an error: %v", err)
@@ -90,7 +90,7 @@ func TestParseInput_EmptyFile(t *testing.T) {
 	}
 
 	// Call parseInput with the empty file
-	ants, rooms, links, err := input.ParseInput(tmpfile.Name())
+	ants, rooms, links, err := file_parse.ParseInput(tmpfile.Name())
 	// Check the results
 	if err != nil {
 		t.Errorf("Expected no error for empty file, got: %v", err)
@@ -122,7 +122,7 @@ func TestParseInput_InvalidAnts(t *testing.T) {
 	tmpfile.Close()
 
 	// Call parseInput with the temporary file
-	ants, rooms, links, err := input.ParseInput(tmpfile.Name())
+	ants, rooms, links, err := file_parse.ParseInput(tmpfile.Name())
 
 	// Check the results
 	if err == nil {
@@ -134,4 +134,52 @@ func TestParseInput_InvalidAnts(t *testing.T) {
 	if err.Error() != "invalid number of ants" {
 		t.Errorf("Expected error message 'invalid number of ants', but got '%s'", err.Error())
 	}
+}
+
+func TestParseInput_IdentifiesStartRoom(t *testing.T) {
+	tempFile, err := os.CreateTemp("", "test_input_*.txt")
+	if err != nil {
+		t.Fatalf("Failed to create temporary file: %v", err)
+	}
+	defer os.Remove(tempFile.Name())
+
+	input := `3
+##start
+start 0 1
+room1 2 3
+room2 4 5
+start-room1
+start-room2
+`
+	if _, err := tempFile.WriteString(input); err != nil {
+		t.Fatalf("Failed to write to temporary file: %v", err)
+	}
+	tempFile.Close()
+
+	ants, rooms, _, err := file_parse.ParseInput(tempFile.Name())
+	if err != nil {
+		t.Fatalf("parseInput returned an error: %v", err)
+	}
+
+	if ants != 3 {
+		t.Errorf("Expected 3 ants, got %d", ants)
+	}
+
+	startRoom := findStartRoom(rooms)
+	if startRoom == nil {
+		t.Fatalf("No start room found")
+	}
+
+	if startRoom.Name != "start" || startRoom.X != 0 || startRoom.Y != 1 || !startRoom.IsStart {
+		t.Errorf("Start room not correctly identified: %+v", startRoom)
+	}
+}
+
+func findStartRoom(rooms []file_parse.Room) *file_parse.Room {
+	for _, room := range rooms {
+		if room.IsStart {
+			return &room
+		}
+	}
+	return nil
 }
