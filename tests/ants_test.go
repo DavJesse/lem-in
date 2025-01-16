@@ -55,9 +55,9 @@ func TestSortPaths(t *testing.T) {
 		{"g", "h", "i", "j"},
 	}
 	expected := [][]string{
+		{"f"},
 		{"a", "b"},
 		{"c", "d", "e"},
-		{"f"},
 		{"g", "h", "i", "j"},
 	}
 
@@ -76,9 +76,9 @@ func TestSortPaths_WithUnicode(t *testing.T) {
 		{"α", "β", "γ"},
 	}
 	expected := [][]string{
-		{"α", "β", "γ"},
 		{"こんにちは", "世界"},
 		{"你好", "世界"},
+		{"α", "β", "γ"},
 		{"γ", "β", "α"},
 	}
 

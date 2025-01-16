@@ -1,7 +1,5 @@
 package utils
 
-import "sort"
-
 type Ant struct {
 	Id       int
 	PathIdx  int
@@ -15,7 +13,13 @@ func MoveAnts(ants int, paths Paths) [][]string {
 }
 
 func SortPaths(paths [][]string) {
-	sort.Sort(Paths(paths))
+	for i := 0; i < len(paths)-1; i++ {
+		for j := i + 1; j < len(paths); j++ {
+			if len(paths[i]) > len(paths[j]) {
+				paths[i], paths[j] = paths[j], paths[i]
+			}
+		}
+	}
 }
 
 func (p Paths) Swap(i, j int) {
