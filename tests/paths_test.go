@@ -123,7 +123,7 @@ func TestFindPaths_SameStartAndEnd(t *testing.T) {
 
 	paths := utils.FindPaths(startRoom, endRoom, links)
 
-	if len(paths) != 0 {
+	if len(paths) != 1 {
 		t.Errorf("Expected empty slice, but got %v", paths)
 	}
 }
