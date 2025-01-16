@@ -2,17 +2,19 @@ package utils
 
 import "lemin/models"
 
-func FindPaths(startRoom string, endRoom string, links []models.Link) [][]string {
+func FindPaths(startRoom string, endRoom string, links []models.Link) []models.Path {
 	// Initiate utility variables
-	var paths [][]string
+	var paths []models.Path
 	visited := make(map[string]bool)
 	currentPath := []string{startRoom}
 
 	var dfs func(current string)
 	dfs = func(current string) {
 		if current == endRoom {
-			newPath := make([]string, len(currentPath))
-			copy(newPath, currentPath)
+			var newPath models.Path
+			precursor := make([]string, len(currentPath))
+			copy(precursor, currentPath)
+			newPath.Rooms = precursor
 			paths = append(paths, newPath)
 			return
 		}
