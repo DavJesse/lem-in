@@ -46,3 +46,24 @@ func TestSortPaths_MaintainsOrderWithIdenticalElements(t *testing.T) {
 		t.Errorf("SortPaths did not maintain order of paths with identical elements. Got %v, expected %v", paths, expected)
 	}
 }
+
+func TestSortPaths(t *testing.T) {
+	paths := [][]string{
+		{"c", "d", "e"},
+		{"a", "b"},
+		{"f"},
+		{"g", "h", "i", "j"},
+	}
+	expected := [][]string{
+		{"a", "b"},
+		{"c", "d", "e"},
+		{"f"},
+		{"g", "h", "i", "j"},
+	}
+
+	utils.SortPaths(paths)
+
+	if !reflect.DeepEqual(paths, expected) {
+		t.Errorf("SortPaths failed. Expected %v, got %v", expected, paths)
+	}
+}
