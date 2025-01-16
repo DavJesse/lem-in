@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"lemin/models"
 )
 
@@ -29,14 +28,14 @@ func MoveAnts(ants int, paths []models.Path) [][]string {
 		finished := true
 		var currentMoves []string
 
-		for i := range antList {
-			if antList[i].Position < len(paths[0])-1 {
-				finished = false
-				antList[i].Position++
-				move := fmt.Sprintf("L%d-%s", antList[i].Id, paths[0][antList[i].Position])
-				currentMoves = append(currentMoves, move)
-			}
-		}
+		// for i := range antList {
+		// 	if antList[i].Position < len(paths[0])-1 {
+		// 		finished = false
+		// 		antList[i].Position++
+		// 		move := fmt.Sprintf("L%d-%s", antList[i].Id, paths[0][antList[i].Position])
+		// 		currentMoves = append(currentMoves, move)
+		// 	}
+		// }
 
 		if finished {
 			break
