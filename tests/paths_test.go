@@ -248,7 +248,7 @@ func TestFindPaths_IsolatedRooms(t *testing.T) {
 	paths := utils.FindPaths("start", "end", links)
 
 	expected := []models.Path{}
-	expected = append(expected, models.Path{Rooms : []string{"start", "A", "B", "end"}})
+	expected = append(expected, models.Path{Rooms: []string{"start", "A", "B", "end"}})
 
 	if len(paths) != len(expected) {
 		t.Fatalf("Expected %d paths, but got %d", len(expected), len(paths))

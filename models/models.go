@@ -15,7 +15,7 @@ type Link struct {
 
 type Path struct {
 	Rooms []string
-	Ants int
+	Ants  int
 }
 
 type Room struct {
