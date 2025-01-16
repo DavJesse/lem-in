@@ -67,3 +67,24 @@ func TestSortPaths(t *testing.T) {
 		t.Errorf("SortPaths failed. Expected %v, got %v", expected, paths)
 	}
 }
+
+func TestSortPaths_WithUnicode(t *testing.T) {
+	paths := [][]string{
+		{"γ", "β", "α"},
+		{"こんにちは", "世界"},
+		{"你好", "世界"},
+		{"α", "β", "γ"},
+	}
+	expected := [][]string{
+		{"α", "β", "γ"},
+		{"こんにちは", "世界"},
+		{"你好", "世界"},
+		{"γ", "β", "α"},
+	}
+
+	utils.SortPaths(paths)
+
+	if !reflect.DeepEqual(paths, expected) {
+		t.Errorf("SortPaths failed with unicode characters. Got %v, expected %v", paths, expected)
+	}
+}
