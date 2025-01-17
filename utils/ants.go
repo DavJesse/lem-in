@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"fmt"
+	"log"
+
 	"lemin/models"
 )
 
@@ -24,24 +27,57 @@ func MoveAnts(ants int, paths []models.Path) [][]string {
 		}
 	}
 
-	for {
-		finished := true
-		var currentMoves []string
+	// Move the first ant to the first path
+	paths[0].Ants++
+	curr := []string{}
+	move := fmt.Sprintf("L%d-%s", antList[0].Id, paths[0].Rooms[0])
+	curr = append(curr, move)
+	moves = append(moves, curr)
+	log.Printf("Nummber of paths: %d", len(paths))
 
-		// for i := range antList {
-		// 	if antList[i].Position < len(paths[0])-1 {
-		// 		finished = false
-		// 		antList[i].Position++
-		// 		move := fmt.Sprintf("L%d-%s", antList[i].Id, paths[0][antList[i].Position])
-		// 		currentMoves = append(currentMoves, move)
-		// 	}
-		// }
+	for i := 1; i < len(paths); i++ {
+		if i < len(paths)-1 {
+			pathRooms := len(paths[i].Rooms)
+			nextPathRooms := len(paths[i+1].Rooms)
+			pathAnts := paths[i].Ants
+			param := pathRooms + pathAnts
 
-		if finished {
-			break
+			if param > nextPathRooms {
+				paths[i+1].Ants++
+				curr = nil
+				move = fmt.Sprintf("L%d-%s", antList[i].Id, paths[i+1].Rooms[i-1])
+				log.Printf("move: %s", move)
+				curr = append(curr, move)
+				moves = append(moves, curr)
+			} else {
+				paths[i].Ants++
+				curr = nil
+				move = fmt.Sprintf("L%d-%s", antList[i].Id, paths[i].Rooms[i])
+				log.Printf("move: %s", move)
+				curr = append(curr, move)
+				moves = append(moves, curr)
+			}
 		}
-		moves = append(moves, currentMoves)
 	}
+
+	// for {
+	// 	finished := true
+	// 	var currentMoves []string
+
+	// 	for i := range antList {
+	// 		if antList[i].Position < len(paths[0])-1 {
+	// 			finished = false
+	// 			antList[i].Position++
+	// 			move := fmt.Sprintf("L%d-%s", antList[i].Id, paths[0][antList[i].Position])
+	// 			currentMoves = append(currentMoves, move)
+	// 		}
+	// 	}
+
+	// 	if finished {
+	// 		break
+	// 	}
+	// 	moves = append(moves, currentMoves)
+	// }
 
 	return moves
 }

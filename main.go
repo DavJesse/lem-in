@@ -142,8 +142,10 @@ func main() {
 	}
 	fmt.Println()
 
+	moves := utils.MoveAnts(ants, paths)
+
 	// Move ants and print moves
-	moves := moveAnts(ants, paths)
+	//moves := moveAnts(ants, paths)
 	for _, move := range moves {
 		fmt.Println(strings.Join(move, " "))
 	}
