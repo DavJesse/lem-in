@@ -285,3 +285,23 @@ func TestAssignAnts_PrioritizesShorterPaths(t *testing.T) {
 		t.Errorf("Expected total number of ants to be %d, but got %d", ants, totalAnts)
 	}
 }
+
+func TestAssignAnts_UpdatesTotalAntsCount(t *testing.T) {
+	paths := []models.Path{
+		{Rooms: []string{"A", "B"}, TotalAnts: 0},
+		{Rooms: []string{"C", "D", "E"}, TotalAnts: 0},
+	}
+	ants := 5
+
+	updatedPaths := utils.AssignAnts(ants, paths)
+
+	expectedTotalAnts := 5
+	actualTotalAnts := 0
+	for _, path := range updatedPaths {
+		actualTotalAnts += path.TotalAnts
+	}
+
+	if actualTotalAnts != expectedTotalAnts {
+		t.Errorf("Expected total ants across all paths to be %d, but got %d", expectedTotalAnts, actualTotalAnts)
+	}
+}
