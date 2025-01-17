@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -200,6 +201,38 @@ func TestAssign_AntsEqualToPathCount(t *testing.T) {
 		}
 		if len(path.Ants) != 1 {
 			t.Errorf("Expected path %d to have 1 ant in Ants slice, but got %d", i, len(path.Ants))
+		}
+	}
+}
+
+func TestAssignAnts_WithOnePath(t *testing.T) {
+	ants := 5
+	paths := []models.Path{
+		{
+			Rooms:     []string{"start", "room1", "room2", "end"},
+			TotalAnts: 0,
+			Ants:      []string{},
+		},
+	}
+
+	result := utils.AssignAnts(ants, paths)
+
+	if len(result) != 1 {
+		t.Errorf("Expected 1 path, got %d", len(result))
+	}
+
+	if result[0].TotalAnts != ants {
+		t.Errorf("Expected %d ants in the path, got %d", ants, result[0].TotalAnts)
+	}
+
+	if len(result[0].Ants) != ants {
+		t.Errorf("Expected %d ants in the Ants slice, got %d", ants, len(result[0].Ants))
+	}
+
+	for i, ant := range result[0].Ants {
+		expectedAnt := fmt.Sprintf("%d", i+1)
+		if ant != expectedAnt {
+			t.Errorf("Expected ant %s, got %s", expectedAnt, ant)
 		}
 	}
 }
