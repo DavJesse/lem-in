@@ -134,3 +134,41 @@ func TestAssignAnts_MoreAntsThanPaths(t *testing.T) {
 		}
 	}
 }
+
+func TestAssignAnts_EvenDistribution(t *testing.T) {
+	paths := []models.Path{
+		{Rooms: []string{"1", "2", "3"}, Ants: []string{}, TotalAnts: 0},
+		{Rooms: []string{"4", "5", "6"}, Ants: []string{}, TotalAnts: 0},
+		{Rooms: []string{"7", "8", "9"}, Ants: []string{}, TotalAnts: 0},
+	}
+	ants := 9
+
+	result := utils.AssignAnts(ants, paths)
+
+	if len(result) != 3 {
+		t.Errorf("Expected 3 paths, got %d", len(result))
+	}
+
+	for i, path := range result {
+		if len(path.Ants) != 3 {
+			t.Errorf("Expected 3 ants in path %d, got %d", i, len(path.Ants))
+		}
+		if path.TotalAnts != 3 {
+			t.Errorf("Expected TotalAnts to be 3 for path %d, got %d", i, path.TotalAnts)
+		}
+	}
+
+	allAnts := make(map[string]bool)
+	for _, path := range result {
+		for _, ant := range path.Ants {
+			if allAnts[ant] {
+				t.Errorf("Ant %s assigned to multiple paths", ant)
+			}
+			allAnts[ant] = true
+		}
+	}
+
+	if len(allAnts) != ants {
+		t.Errorf("Expected %d unique ants, got %d", ants, len(allAnts))
+	}
+}
