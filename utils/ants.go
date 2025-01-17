@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 
 	"lemin/models"
 )
@@ -27,57 +26,51 @@ func MoveAnts(ants int, paths []models.Path) [][]string {
 		}
 	}
 
-	// Move the first ant to the first path
-	paths[0].Ants++
-	curr := []string{}
-	move := fmt.Sprintf("L%d-%s", antList[0].Id, paths[0].Rooms[0])
-	curr = append(curr, move)
-	moves = append(moves, curr)
-	log.Printf("Nummber of paths: %d", len(paths))
+	for i := 0; i < len(paths); i++ {
+		precursor := []string{}
+		moves = append(moves, precursor)
+	}
 
-	for i := 1; i < len(paths); i++ {
-		if i < len(paths)-1 {
-			pathRooms := len(paths[i].Rooms)
-			nextPathRooms := len(paths[i+1].Rooms)
-			pathAnts := paths[i].Ants
-			param := pathRooms + pathAnts
+	var currPath int
+	for i := 0; i < ants; i++ {
+		// Establish variables
+		var nextPath int
+		if currPath == len(paths)-1 {
+			nextPath = 0
+		} else {
+			nextPath = currPath + 1
+		}
 
-			if param > nextPathRooms {
-				paths[i+1].Ants++
-				curr = nil
-				move = fmt.Sprintf("L%d-%s", antList[i].Id, paths[i+1].Rooms[i-1])
-				log.Printf("move: %s", move)
-				curr = append(curr, move)
-				moves = append(moves, curr)
-			} else {
-				paths[i].Ants++
-				curr = nil
-				move = fmt.Sprintf("L%d-%s", antList[i].Id, paths[i].Rooms[i])
-				log.Printf("move: %s", move)
-				curr = append(curr, move)
-				moves = append(moves, curr)
+		roomsInCurrPath := len(paths[currPath].Rooms)
+		roomsInNextPath := len(paths[nextPath].Rooms)
+		antsInCurrPath := paths[currPath].Ants
+
+		// Establish parameter to decide where to move ant
+		if (roomsInCurrPath + antsInCurrPath) > roomsInNextPath {
+			roomIndex := paths[nextPath].Indicator
+
+			// Send ant to next path
+			pathMove := fmt.Sprintf("L%d-%s", antList[i].Id, paths[nextPath].Rooms[roomIndex])
+			moves[nextPath] = append(moves[nextPath], pathMove)
+			if paths[nextPath].Indicator < roomsInNextPath-1 {
+				paths[nextPath].Indicator++
+			}
+			paths[nextPath].Ants++
+			currPath = nextPath
+
+		} else {
+			roomIndex := paths[currPath].Indicator
+
+			// Send ant to current path
+			pathMove := fmt.Sprintf("L%d-%s", antList[i].Id, paths[currPath].Rooms[roomIndex])
+			moves[currPath] = append(moves[currPath], pathMove)
+
+			paths[currPath].Ants++
+			if paths[currPath].Indicator < roomsInCurrPath-1 {
+				paths[currPath].Indicator++
 			}
 		}
 	}
-
-	// for {
-	// 	finished := true
-	// 	var currentMoves []string
-
-	// 	for i := range antList {
-	// 		if antList[i].Position < len(paths[0])-1 {
-	// 			finished = false
-	// 			antList[i].Position++
-	// 			move := fmt.Sprintf("L%d-%s", antList[i].Id, paths[0][antList[i].Position])
-	// 			currentMoves = append(currentMoves, move)
-	// 		}
-	// 	}
-
-	// 	if finished {
-	// 		break
-	// 	}
-	// 	moves = append(moves, currentMoves)
-	// }
 
 	return moves
 }
