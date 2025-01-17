@@ -266,3 +266,22 @@ func TestAssignAnts_WrapsAroundPaths(t *testing.T) {
 		t.Errorf("Expected ant 3 in the third path, but got %v", result[2].Ants)
 	}
 }
+
+func TestAssignAnts_PrioritizesShorterPaths(t *testing.T) {
+	paths := []models.Path{
+		{Rooms: []string{"A", "B", "C"}, TotalAnts: 0, Ants: []string{}},
+		{Rooms: []string{"A", "D"}, TotalAnts: 0, Ants: []string{}},
+	}
+	ants := 5
+
+	result := utils.AssignAnts(ants, paths)
+
+	if len(result[1].Ants) <= len(result[0].Ants) {
+		t.Errorf("Expected shorter path to have more ants, but got %d ants in shorter path and %d ants in longer path", len(result[1].Ants), len(result[0].Ants))
+	}
+
+	totalAnts := len(result[0].Ants) + len(result[1].Ants)
+	if totalAnts != ants {
+		t.Errorf("Expected total number of ants to be %d, but got %d", ants, totalAnts)
+	}
+}
