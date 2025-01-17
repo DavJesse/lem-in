@@ -305,3 +305,29 @@ func TestAssignAnts_UpdatesTotalAntsCount(t *testing.T) {
 		t.Errorf("Expected total ants across all paths to be %d, but got %d", expectedTotalAnts, actualTotalAnts)
 	}
 }
+
+func TestAssignAnts_ZeroAntsOrPaths(t *testing.T) {
+	// Test case with zero ants
+	zeroAnts := 0
+	paths := []models.Path{
+		{Rooms: []string{"A", "B", "C"}},
+		{Rooms: []string{"A", "D", "C"}},
+	}
+	result := utils.AssignAnts(zeroAnts, paths)
+	if len(result) != len(paths) {
+		t.Errorf("Expected %d paths, got %d", len(paths), len(result))
+	}
+	for _, path := range result {
+		if len(path.Ants) != 0 {
+			t.Errorf("Expected no ants assigned, got %d", len(path.Ants))
+		}
+	}
+
+	// Test case with zero paths
+	ants := 5
+	zeroPaths := []models.Path{}
+	result = utils.AssignAnts(ants, zeroPaths)
+	if len(result) != 0 {
+		t.Errorf("Expected 0 paths, got %d", len(result))
+	}
+}
