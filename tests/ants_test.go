@@ -91,3 +91,46 @@ func TestAssignAnts(t *testing.T) {
 		}
 	}
 }
+
+func TestAssignAnts_MoreAntsThanPaths(t *testing.T) {
+	paths := []models.Path{
+		{Rooms: []string{"A", "B"}, Ants: []string{}, TotalAnts: 0},
+		{Rooms: []string{"C", "D", "E"}, Ants: []string{}, TotalAnts: 0},
+	}
+	ants := 5
+
+	result := utils.AssignAnts(ants, paths)
+
+	if len(result) != 2 {
+		t.Errorf("Expected 2 paths, got %d", len(result))
+	}
+
+	totalAssignedAnts := 0
+	for _, path := range result {
+		totalAssignedAnts += path.TotalAnts
+	}
+
+	if totalAssignedAnts != ants {
+		t.Errorf("Expected %d ants to be assigned, but got %d", ants, totalAssignedAnts)
+	}
+
+	if result[0].TotalAnts <= result[1].TotalAnts {
+		t.Errorf("Expected more ants in the shorter path, got %d in path 1 and %d in path 2", result[0].TotalAnts, result[1].TotalAnts)
+	}
+
+	// Check if the ants are correctly distributed
+	expectedDistribution := []int{3, 2}
+	for i, path := range result {
+		if path.TotalAnts != expectedDistribution[i] {
+			t.Errorf("Expected %d ants in path %d, but got %d", expectedDistribution[i], i+1, path.TotalAnts)
+		}
+	}
+
+	// Verify that the Ants slice contains the correct ant IDs
+	expectedAnts := [][]string{{"1", "2", "3"}, {"4", "5"}}
+	for i, path := range result {
+		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
+			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
+		}
+	}
+}
