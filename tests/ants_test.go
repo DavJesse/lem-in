@@ -236,3 +236,33 @@ func TestAssignAnts_WithOnePath(t *testing.T) {
 		}
 	}
 }
+
+func TestAssignAnts_WrapsAroundPaths(t *testing.T) {
+	paths := []models.Path{
+		{Rooms: []string{"A", "B"}, TotalAnts: 0},
+		{Rooms: []string{"A", "C", "D"}, TotalAnts: 0},
+		{Rooms: []string{"A", "E", "F", "G"}, TotalAnts: 0},
+	}
+	ants := 5
+
+	result := utils.AssignAnts(ants, paths)
+
+	expectedAntDistribution := []int{2, 2, 1}
+	for i, path := range result {
+		if path.TotalAnts != expectedAntDistribution[i] {
+			t.Errorf("Path %d expected %d ants, but got %d", i, expectedAntDistribution[i], path.TotalAnts)
+		}
+	}
+
+	if result[0].Ants[0] != "1" || result[0].Ants[1] != "4" {
+		t.Errorf("Expected ants 1 and 4 in the first path, but got %v", result[0].Ants)
+	}
+
+	if result[1].Ants[0] != "2" || result[1].Ants[1] != "5" {
+		t.Errorf("Expected ants 2 and 5 in the second path, but got %v", result[1].Ants)
+	}
+
+	if result[2].Ants[0] != "3" {
+		t.Errorf("Expected ant 3 in the third path, but got %v", result[2].Ants)
+	}
+}
