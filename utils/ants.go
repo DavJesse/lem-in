@@ -12,8 +12,7 @@ type Ant struct {
 	Position int
 }
 
-func MoveAnts(ants int, paths []models.Path) [][]string {
-	var moves [][]string
+func AssignAnts(ants int, paths []models.Path) []models.Path {
 	// Sort paths by length, shortest first
 	SortPaths(paths)
 
@@ -24,11 +23,6 @@ func MoveAnts(ants int, paths []models.Path) [][]string {
 			Id:       i + 1,
 			Position: -1,
 		}
-	}
-
-	for i := 0; i < len(paths); i++ {
-		precursor := []string{}
-		moves = append(moves, precursor)
 	}
 
 	var currPath int
@@ -43,36 +37,29 @@ func MoveAnts(ants int, paths []models.Path) [][]string {
 
 		roomsInCurrPath := len(paths[currPath].Rooms)
 		roomsInNextPath := len(paths[nextPath].Rooms)
-		antsInCurrPath := paths[currPath].Ants
+		antsInCurrPath := paths[currPath].TotalAnts
 
 		// Establish parameter to decide where to move ant
 		if (roomsInCurrPath + antsInCurrPath) > roomsInNextPath {
-			roomIndex := paths[nextPath].Indicator
 
 			// Send ant to next path
-			pathMove := fmt.Sprintf("L%d-%s", antList[i].Id, paths[nextPath].Rooms[roomIndex])
-			moves[nextPath] = append(moves[nextPath], pathMove)
-			if paths[nextPath].Indicator < roomsInNextPath-1 {
-				paths[nextPath].Indicator++
-			}
-			paths[nextPath].Ants++
+			currAnt := fmt.Sprintf("%d", antList[i].Id)
+			paths[nextPath].Ants = append(paths[nextPath].Ants, currAnt)
+
+			paths[nextPath].TotalAnts++
 			currPath = nextPath
 
 		} else {
-			roomIndex := paths[currPath].Indicator
 
 			// Send ant to current path
-			pathMove := fmt.Sprintf("L%d-%s", antList[i].Id, paths[currPath].Rooms[roomIndex])
-			moves[currPath] = append(moves[currPath], pathMove)
+			currAnt := fmt.Sprintf("%d", antList[i].Id)
+			paths[currPath].Ants = append(paths[currPath].Ants, currAnt)
 
-			paths[currPath].Ants++
-			if paths[currPath].Indicator < roomsInCurrPath-1 {
-				paths[currPath].Indicator++
-			}
+			paths[currPath].TotalAnts++
 		}
 	}
 
-	return moves
+	return paths
 }
 
 func SortPaths(paths []models.Path) {

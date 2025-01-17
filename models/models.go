@@ -15,7 +15,8 @@ type Link struct {
 
 type Path struct {
 	Rooms     []string
-	Ants      int
+	Ants      []string
+	TotalAnts int
 	Indicator int
 }
 
