@@ -172,3 +172,34 @@ func TestAssignAnts_EvenDistribution(t *testing.T) {
 		t.Errorf("Expected %d unique ants, got %d", ants, len(allAnts))
 	}
 }
+
+func TestAssign_AntsEqualToPathCount(t *testing.T) {
+	ants := 3
+	paths := []models.Path{
+		{Rooms: []string{"A", "B"}, TotalAnts: 0, Ants: []string{}},
+		{Rooms: []string{"A", "C", "D"}, TotalAnts: 0, Ants: []string{}},
+		{Rooms: []string{"A", "E", "F", "G"}, TotalAnts: 0, Ants: []string{}},
+	}
+
+	result := utils.AssignAnts(ants, paths)
+
+	// Check if all ants are assigned
+	totalAssignedAnts := 0
+	for _, path := range result {
+		totalAssignedAnts += path.TotalAnts
+	}
+
+	if totalAssignedAnts != ants {
+		t.Errorf("Expected %d ants to be assigned, but got %d", ants, totalAssignedAnts)
+	}
+
+	// Check if each path has exactly one ant
+	for i, path := range result {
+		if path.TotalAnts != 1 {
+			t.Errorf("Expected path %d to have 1 ant, but got %d", i, path.TotalAnts)
+		}
+		if len(path.Ants) != 1 {
+			t.Errorf("Expected path %d to have 1 ant in Ants slice, but got %d", i, len(path.Ants))
+		}
+	}
+}
