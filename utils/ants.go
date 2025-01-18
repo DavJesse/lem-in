@@ -13,12 +13,18 @@ type Ant struct {
 }
 
 func AssignAnts(ants int, paths []models.Path) []models.Path {
+	var minCostIndex int // Set default value for minimum cost
+
 	// Check for no-quantity inputs
 	if ants == 0 || len(paths) == 0 {
 		return paths
 	}
+
 	// Sort paths by length, shortest first
 	SortPaths(paths)
+
+	// Update cost field of individual paths
+	UpdateCost(paths)
 
 	// Initialize ant list, assign ids
 	antList := make([]Ant, ants)
@@ -29,38 +35,14 @@ func AssignAnts(ants int, paths []models.Path) []models.Path {
 		}
 	}
 
-	var currPath int
+	// Assign ants to paths, update their total and cost fields
 	for i := 0; i < ants; i++ {
-		// Establish variables
-		var nextPath int
-		if currPath == len(paths)-1 {
-			nextPath = 0
-		} else {
-			nextPath = currPath + 1
-		}
+		minCostIndex = FindMinCostInIndex(paths)
+		currAnt := fmt.Sprintf("%d", antList[i].Id)
 
-		roomsInCurrPath := len(paths[currPath].Rooms)
-		roomsInNextPath := len(paths[nextPath].Rooms)
-		antsInCurrPath := paths[currPath].TotalAnts
-
-		// Establish parameter to decide where to move ant
-		if (roomsInCurrPath + antsInCurrPath) > roomsInNextPath {
-
-			// Send ant to next path
-			currAnt := fmt.Sprintf("%d", antList[i].Id)
-			paths[nextPath].Ants = append(paths[nextPath].Ants, currAnt)
-
-			paths[nextPath].TotalAnts++
-			currPath = nextPath
-
-		} else {
-
-			// Send ant to current path
-			currAnt := fmt.Sprintf("%d", antList[i].Id)
-			paths[currPath].Ants = append(paths[currPath].Ants, currAnt)
-
-			paths[currPath].TotalAnts++
-		}
+		paths[minCostIndex].Ants = append(paths[minCostIndex].Ants, currAnt)
+		paths[minCostIndex].TotalAnts++
+		paths[minCostIndex].Cost++
 	}
 
 	return paths
@@ -73,5 +55,22 @@ func SortPaths(paths []models.Path) {
 				paths[i], paths[j] = paths[j], paths[i]
 			}
 		}
+	}
+}
+
+func FindMinCostInIndex(paths []models.Path) int {
+	var minCost int
+	for i := range paths {
+		if paths[i].Cost < paths[minCost].Cost {
+			minCost = i
+		}
+	}
+	return minCost
+}
+
+func UpdateCost(paths []models.Path) {
+	for i := range paths {
+		cost := len(paths[i].Rooms) + len(paths[i].Ants)
+		paths[i].Cost = cost
 	}
 }
