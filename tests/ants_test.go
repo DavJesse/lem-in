@@ -59,24 +59,24 @@ func TestAssignAnts(t *testing.T) {
 	}
 
 	// Call AssignAnts
-	result := utils.AssignAnts(5, paths)
+	utils.AssignAnts(5, paths)
 
 	// Check if paths are sorted by length
-	for i := 0; i < len(result)-1; i++ {
-		if len(result[i].Rooms) > len(result[i+1].Rooms) {
+	for i := 0; i < len(paths)-1; i++ {
+		if len(paths[i].Rooms) > len(paths[i+1].Rooms) {
 			t.Errorf("Paths are not sorted correctly. Path %d has length %d, Path %d has length %d",
-				i, len(result[i].Rooms), i+1, len(result[i+1].Rooms))
+				i, len(paths[i].Rooms), i+1, len(paths[i+1].Rooms))
 		}
 	}
 
 	// Check if the shortest path is first
-	if len(result[0].Rooms) != 2 {
-		t.Errorf("Shortest path is not first. Expected length 2, got %d", len(result[0].Rooms))
+	if len(paths[0].Rooms) != 2 {
+		t.Errorf("Shortest path is not first. Expected length 2, got %d", len(paths[0].Rooms))
 	}
 
 	// Check total number of ants assigned
 	totalAnts := 0
-	for _, path := range result {
+	for _, path := range paths {
 		totalAnts += path.TotalAnts
 	}
 	if totalAnts != 5 {
@@ -85,7 +85,7 @@ func TestAssignAnts(t *testing.T) {
 
 	// Check if ants are distributed optimally
 	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}, nil}
-	for i, path := range result {
+	for i, path := range paths {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
 			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
@@ -99,14 +99,14 @@ func TestAssignAnts_MoreAntsThanPaths(t *testing.T) {
 	}
 	ants := 5
 
-	result := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
-	if len(result) != 2 {
-		t.Errorf("Expected 2 paths, got %d", len(result))
+	if len(paths) != 2 {
+		t.Errorf("Expected 2 paths, got %d", len(paths))
 	}
 
 	totalAssignedAnts := 0
-	for _, path := range result {
+	for _, path := range paths {
 		totalAssignedAnts += path.TotalAnts
 	}
 
@@ -114,13 +114,13 @@ func TestAssignAnts_MoreAntsThanPaths(t *testing.T) {
 		t.Errorf("Expected %d ants to be assigned, but got %d", ants, totalAssignedAnts)
 	}
 
-	if result[0].TotalAnts <= result[1].TotalAnts {
-		t.Errorf("Expected more ants in the shorter path, got %d in path 1 and %d in path 2", result[0].TotalAnts, result[1].TotalAnts)
+	if paths[0].TotalAnts <= paths[1].TotalAnts {
+		t.Errorf("Expected more ants in the shorter path, got %d in path 1 and %d in path 2", paths[0].TotalAnts, paths[1].TotalAnts)
 	}
 
 	// Check if the ants are correctly distributed
 	expectedDistribution := []int{3, 2}
-	for i, path := range result {
+	for i, path := range paths {
 		if path.TotalAnts != expectedDistribution[i] {
 			t.Errorf("Expected %d ants in path %d, but got %d", expectedDistribution[i], i+1, path.TotalAnts)
 		}
@@ -128,7 +128,7 @@ func TestAssignAnts_MoreAntsThanPaths(t *testing.T) {
 
 	// Verify that the Ants slice contains the correct ant IDs
 	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}}
-	for i, path := range result {
+	for i, path := range paths {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
 			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
@@ -143,13 +143,13 @@ func TestAssignAnts_EvenDistribution(t *testing.T) {
 	}
 	ants := 9
 
-	result := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
-	if len(result) != 3 {
-		t.Errorf("Expected 3 paths, got %d", len(result))
+	if len(paths) != 3 {
+		t.Errorf("Expected 3 paths, got %d", len(paths))
 	}
 
-	for i, path := range result {
+	for i, path := range paths {
 		if len(path.Ants) != 3 {
 			t.Errorf("Expected 3 ants in path %d, got %d", i, len(path.Ants))
 		}
@@ -159,7 +159,7 @@ func TestAssignAnts_EvenDistribution(t *testing.T) {
 	}
 
 	allAnts := make(map[string]bool)
-	for _, path := range result {
+	for _, path := range paths {
 		for _, ant := range path.Ants {
 			if allAnts[ant] {
 				t.Errorf("Ant %s assigned to multiple paths", ant)
@@ -181,11 +181,11 @@ func TestAssign_AntsEqualToPathCount(t *testing.T) {
 		{Rooms: []string{"A", "E", "F", "G"}, TotalAnts: 0, Ants: []string{}},
 	}
 
-	result := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
 	// Check if all ants are assigned
 	totalAssignedAnts := 0
-	for _, path := range result {
+	for _, path := range paths {
 		totalAssignedAnts += path.TotalAnts
 	}
 
@@ -194,7 +194,7 @@ func TestAssign_AntsEqualToPathCount(t *testing.T) {
 	}
 
 	expectedAnts := [][]string{{"1", "2"}, {"3"}, {}}
-	for i, path := range result {
+	for i, path := range paths {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
 			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
@@ -211,21 +211,21 @@ func TestAssignAnts_WithOnePath(t *testing.T) {
 		},
 	}
 
-	result := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
-	if len(result) != 1 {
-		t.Errorf("Expected 1 path, got %d", len(result))
+	if len(paths) != 1 {
+		t.Errorf("Expected 1 path, got %d", len(paths))
 	}
 
-	if result[0].TotalAnts != ants {
-		t.Errorf("Expected %d ants in the path, got %d", ants, result[0].TotalAnts)
+	if paths[0].TotalAnts != ants {
+		t.Errorf("Expected %d ants in the path, got %d", ants, paths[0].TotalAnts)
 	}
 
-	if len(result[0].Ants) != ants {
-		t.Errorf("Expected %d ants in the Ants slice, got %d", ants, len(result[0].Ants))
+	if len(paths[0].Ants) != ants {
+		t.Errorf("Expected %d ants in the Ants slice, got %d", ants, len(paths[0].Ants))
 	}
 
-	for i, ant := range result[0].Ants {
+	for i, ant := range paths[0].Ants {
 		expectedAnt := fmt.Sprintf("%d", i+1)
 		if ant != expectedAnt {
 			t.Errorf("Expected ant %s, got %s", expectedAnt, ant)
@@ -241,10 +241,10 @@ func TestAssignAnts_WrapsAroundPaths(t *testing.T) {
 	}
 	ants := 5
 
-	result := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
 	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}, nil}
-	for i, path := range result {
+	for i, path := range paths {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
 			t.Errorf("Expected ants %#v in path %d, but got %#v", expectedAnts[i], i+1, path.Ants)
 		}
@@ -258,10 +258,10 @@ func TestAssignAnts_PrioritizesShorterPaths(t *testing.T) {
 	}
 	ants := 5
 
-	result := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
 	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}}
-	for i, path := range result {
+	for i, path := range paths {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
 			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
@@ -275,11 +275,11 @@ func TestAssignAnts_UpdatesTotalAntsCount(t *testing.T) {
 	}
 	ants := 5
 
-	updatedPaths := utils.AssignAnts(ants, paths)
+	utils.AssignAnts(ants, paths)
 
 	expectedTotalAnts := 5
 	actualTotalAnts := 0
-	for _, path := range updatedPaths {
+	for _, path := range paths {
 		actualTotalAnts += path.TotalAnts
 	}
 
@@ -295,11 +295,9 @@ func TestAssignAnts_ZeroAntsOrPaths(t *testing.T) {
 		{Rooms: []string{"A", "B", "C"}},
 		{Rooms: []string{"A", "D", "C"}},
 	}
-	result := utils.AssignAnts(zeroAnts, paths)
-	if len(result) != len(paths) {
-		t.Errorf("Expected %d paths, got %d", len(paths), len(result))
-	}
-	for _, path := range result {
+	utils.AssignAnts(zeroAnts, paths)
+
+	for _, path := range paths {
 		if len(path.Ants) != 0 {
 			t.Errorf("Expected no ants assigned, got %d", len(path.Ants))
 		}
@@ -308,8 +306,8 @@ func TestAssignAnts_ZeroAntsOrPaths(t *testing.T) {
 	// Test case with zero paths
 	ants := 5
 	zeroPaths := []models.Path{}
-	result = utils.AssignAnts(ants, zeroPaths)
-	if len(result) != 0 {
-		t.Errorf("Expected 0 paths, got %d", len(result))
+	utils.AssignAnts(ants, zeroPaths)
+	if len(zeroPaths) != 0 {
+		t.Errorf("Expected 0 paths, got %d", len(paths))
 	}
 }

@@ -17,7 +17,7 @@ func AssignAnts(ants int, paths []models.Path) {
 
 	// Check for no-quantity inputs
 	if ants == 0 || len(paths) == 0 {
-		return paths
+		return
 	}
 
 	// Sort paths by length, shortest first
@@ -44,8 +44,6 @@ func AssignAnts(ants int, paths []models.Path) {
 		paths[minCostIndex].TotalAnts++
 		paths[minCostIndex].Cost++
 	}
-
-	return paths
 }
 
 func SortPaths(paths []models.Path) {
