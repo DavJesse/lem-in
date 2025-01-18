@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"testing"
 
@@ -85,11 +84,10 @@ func TestAssignAnts(t *testing.T) {
 	}
 
 	// Check if ants are distributed optimally
-	expectedDistribution := []int{2, 2, 1} // Expected distribution for 5 ants
+	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}, nil}
 	for i, path := range result {
-		if path.TotalAnts != expectedDistribution[i] {
-			t.Errorf("Ant distribution is not optimal. Path %d expected %d ants, got %d",
-				i, expectedDistribution[i], path.TotalAnts)
+		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
+			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
 	}
 }
@@ -244,12 +242,11 @@ func TestAssignAnts_WrapsAroundPaths(t *testing.T) {
 	ants := 5
 
 	result := utils.AssignAnts(ants, paths)
-	log.Println(result)
 
-	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}, {}}
+	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}, nil}
 	for i, path := range result {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
-			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
+			t.Errorf("Expected ants %#v in path %d, but got %#v", expectedAnts[i], i+1, path.Ants)
 		}
 	}
 }
