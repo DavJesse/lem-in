@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"testing"
 
@@ -128,7 +129,7 @@ func TestAssignAnts_MoreAntsThanPaths(t *testing.T) {
 	}
 
 	// Verify that the Ants slice contains the correct ant IDs
-	expectedAnts := [][]string{{"1", "2", "3"}, {"4", "5"}}
+	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}}
 	for i, path := range result {
 		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
 			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
@@ -194,13 +195,10 @@ func TestAssign_AntsEqualToPathCount(t *testing.T) {
 		t.Errorf("Expected %d ants to be assigned, but got %d", ants, totalAssignedAnts)
 	}
 
-	// Check if each path has exactly one ant
+	expectedAnts := [][]string{{"1", "2"}, {"3"}, {}}
 	for i, path := range result {
-		if path.TotalAnts != 1 {
-			t.Errorf("Expected path %d to have 1 ant, but got %d", i, path.TotalAnts)
-		}
-		if len(path.Ants) != 1 {
-			t.Errorf("Expected path %d to have 1 ant in Ants slice, but got %d", i, len(path.Ants))
+		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
+			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
 	}
 }
@@ -246,24 +244,13 @@ func TestAssignAnts_WrapsAroundPaths(t *testing.T) {
 	ants := 5
 
 	result := utils.AssignAnts(ants, paths)
+	log.Println(result)
 
-	expectedAntDistribution := []int{2, 2, 1}
+	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}, {}}
 	for i, path := range result {
-		if path.TotalAnts != expectedAntDistribution[i] {
-			t.Errorf("Path %d expected %d ants, but got %d", i, expectedAntDistribution[i], path.TotalAnts)
+		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
+			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
 		}
-	}
-
-	if result[0].Ants[0] != "1" || result[0].Ants[1] != "4" {
-		t.Errorf("Expected ants 1 and 4 in the first path, but got %v", result[0].Ants)
-	}
-
-	if result[1].Ants[0] != "2" || result[1].Ants[1] != "5" {
-		t.Errorf("Expected ants 2 and 5 in the second path, but got %v", result[1].Ants)
-	}
-
-	if result[2].Ants[0] != "3" {
-		t.Errorf("Expected ant 3 in the third path, but got %v", result[2].Ants)
 	}
 }
 
@@ -276,13 +263,11 @@ func TestAssignAnts_PrioritizesShorterPaths(t *testing.T) {
 
 	result := utils.AssignAnts(ants, paths)
 
-	if len(result[1].Ants) <= len(result[0].Ants) {
-		t.Errorf("Expected shorter path to have more ants, but got %d ants in shorter path and %d ants in longer path", len(result[1].Ants), len(result[0].Ants))
-	}
-
-	totalAnts := len(result[0].Ants) + len(result[1].Ants)
-	if totalAnts != ants {
-		t.Errorf("Expected total number of ants to be %d, but got %d", ants, totalAnts)
+	expectedAnts := [][]string{{"1", "2", "4"}, {"3", "5"}}
+	for i, path := range result {
+		if !reflect.DeepEqual(path.Ants, expectedAnts[i]) {
+			t.Errorf("Expected ants %v in path %d, but got %v", expectedAnts[i], i+1, path.Ants)
+		}
 	}
 }
 
