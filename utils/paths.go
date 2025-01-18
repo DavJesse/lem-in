@@ -1,41 +1,65 @@
 package utils
 
-import "lemin/models"
+import (
+	"lemin/models"
+)
 
 func FindPaths(startRoom string, endRoom string, links []models.Link) []models.Path {
-	// Initiate utility variables
 	var paths []models.Path
-	visited := make(map[string]bool)
-	currentPath := []string{startRoom}
+	var visited []string
+	var current string
+	var path models.Path
 
-	var dfs func(current string)
-	dfs = func(current string) {
-		if current == endRoom {
-			var newPath models.Path
-			precursor := make([]string, len(currentPath))
-			copy(precursor, currentPath)
-			newPath.Rooms = precursor
-			paths = append(paths, newPath)
-			return
-		}
-
-		visited[current] = true
-		for _, link := range links {
-			next := ""
-			if link.From == current && !visited[link.To] {
-				next = link.To
-			} else if link.To == current && !visited[link.From] {
-				next = link.From
-			}
-			if next != "" {
-				currentPath = append(currentPath, next)
-				dfs(next)
-				currentPath = currentPath[:len(currentPath)-1]
+	for _, link := range links {
+		if startRoom == link.From || startRoom == link.To {
+			if startRoom == link.From {
+				if Discovered(visited, link.From) {
+					continue
+				}
+				visited = append(visited, link.To)
+				path.Rooms = append(path.Rooms, link.To)
+				current = link.To
+			} else {
+				if Discovered(visited, link.From) {
+					continue
+				}
+				visited = append(visited, link.From)
+				path.Rooms = append(path.Rooms, link.From)
+				current = link.From
 			}
 		}
-		visited[current] = false
+
+		if current == link.From || current == link.To {
+			if current == link.From {
+				if Discovered(visited, link.From) {
+					continue
+				}
+				visited = append(visited, link.To)
+				path.Rooms = append(path.Rooms, link.To)
+				current = link.To
+			} else {
+				if Discovered(visited, link.From) {
+					continue
+				}
+				visited = append(visited, link.From)
+				path.Rooms = append(path.Rooms, link.From)
+				current = link.From
+			}
+		}
+
+		if endRoom == link.From || endRoom == link.To {
+			continue
+		}
+
 	}
-
-	dfs(startRoom)
 	return paths
+}
+
+func Discovered(visited []string, room string) bool {
+	for i := range visited {
+		if visited[i] == room {
+			return true
+		}
+	}
+	return false
 }

@@ -119,6 +119,8 @@ func main() {
 		return
 	}
 
+	utils.AssignAnts(ants, paths)
+
 	// Print the input data
 	content, err := utils.ValidContent(os.Args[1])
 	if err != nil {
