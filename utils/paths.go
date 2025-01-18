@@ -4,18 +4,17 @@ import (
 	"lemin/models"
 )
 
-func FindPaths(startRoom string, endRoom string, links []models.Link) []models.Path {
-	var paths []models.Path
-	var visited []string
+func FindPath(startRoom string, endRoom string, links []models.Link, visited []string) models.Path {
 	var current string
+	var path models.Path
 
 	for _, link := range links {
-		var path models.Path
 		if startRoom == link.From || startRoom == link.To {
 			if startRoom == link.From {
 				if Discovered(visited, link.From) {
 					continue
 				}
+				visited = append(visited, link.From)
 				visited = append(visited, link.To)
 				path.Rooms = append(path.Rooms, link.To)
 				current = link.To
@@ -52,6 +51,16 @@ func FindPaths(startRoom string, endRoom string, links []models.Link) []models.P
 		}
 
 	}
+	return path
+}
+
+func FindPaths(startRoom string, endRoom string, links []models.Link) []models.Path {
+	var paths []models.Path
+	var visited []string
+
+	path := FindPath(startRoom, endRoom, links, visited)
+	paths = append(paths, path)
+
 	return paths
 }
 
