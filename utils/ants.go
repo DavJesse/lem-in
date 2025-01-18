@@ -12,7 +12,7 @@ type Ant struct {
 	Position int
 }
 
-func AssignAnts(ants int, paths []models.Path) []models.Path {
+func AssignAnts(ants int, paths []models.Path) {
 	var minCostIndex int // Set default value for minimum cost
 
 	// Check for no-quantity inputs
