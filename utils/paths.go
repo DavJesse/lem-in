@@ -8,9 +8,9 @@ func FindPaths(startRoom string, endRoom string, links []models.Link) []models.P
 	var paths []models.Path
 	var visited []string
 	var current string
-	var path models.Path
 
 	for _, link := range links {
+		var path models.Path
 		if startRoom == link.From || startRoom == link.To {
 			if startRoom == link.From {
 				if Discovered(visited, link.From) {
