@@ -18,6 +18,7 @@ type Path struct {
 	Ants      []string
 	TotalAnts int
 	Indicator int
+	cost      int
 }
 
 type Room struct {
