@@ -13,6 +13,10 @@ type Ant struct {
 }
 
 func AssignAnts(ants int, paths []models.Path) []models.Path {
+	// Check for no-quantity inputs
+	if ants == 0 || len(paths) == 0 {
+		return paths
+	}
 	// Sort paths by length, shortest first
 	SortPaths(paths)
 
