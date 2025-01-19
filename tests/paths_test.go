@@ -283,3 +283,24 @@ func TestAsignNodes_MultipleLinksFromSameSource(t *testing.T) {
 		t.Errorf("AsignNodes() = %v, want %v", result, expected)
 	}
 }
+
+func TestAsignNodes_OnlyDestinations(t *testing.T) {
+	links := []models.Link{
+		{From: "A", To: "B"},
+		{From: "B", To: "C"},
+		{From: "C", To: "D"},
+	}
+
+	result := utils.AsignNodes(links)
+
+	if _, exists := result["D"]; exists {
+		t.Errorf("AsignNodes created an entry for a node that is only a destination")
+	}
+
+	expectedKeys := []string{"A", "B", "C"}
+	for _, key := range expectedKeys {
+		if _, exists := result[key]; !exists {
+			t.Errorf("AsignNodes did not create an entry for node %s", key)
+		}
+	}
+}
