@@ -304,3 +304,24 @@ func TestAsignNodes_OnlyDestinations(t *testing.T) {
 		}
 	}
 }
+
+func TestAsignNodes_WithCircularLink(t *testing.T) {
+	links := []models.Link{
+		{From: "A", To: "B"},
+		{From: "B", To: "C"},
+		{From: "C", To: "A"},
+		{From: "A", To: "A"}, // Circular link
+	}
+
+	result := utils.AsignNodes(links)
+
+	expected := map[string][]string{
+		"A": {"B", "A"},
+		"B": {"C"},
+		"C": {"A"},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("AsignNodes() = %v, want %v", result, expected)
+	}
+}
