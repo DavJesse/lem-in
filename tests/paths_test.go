@@ -263,3 +263,23 @@ func TestAsignNodes_SingleLink(t *testing.T) {
 		t.Errorf("AsignNodes() = %v, want %v", result, expected)
 	}
 }
+
+func TestAsignNodes_MultipleLinksFromSameSource(t *testing.T) {
+	links := []models.Link{
+		{From: "A", To: "B"},
+		{From: "A", To: "C"},
+		{From: "A", To: "D"},
+		{From: "B", To: "E"},
+	}
+
+	result := utils.AsignNodes(links)
+
+	expected := map[string][]string{
+		"A": {"B", "C", "D"},
+		"B": {"E"},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("AsignNodes() = %v, want %v", result, expected)
+	}
+}
