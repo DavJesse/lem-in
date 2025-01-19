@@ -104,7 +104,7 @@ func Discovered(visited []string, room string) bool {
 }
 
 func AsignNodes(links []models.Link) map[string][]string {
-	var nodes map[string][]string
+	nodes := make(map[string][]string)
 
 	for _, link := range links {
 		_, exists := nodes[link.From]
