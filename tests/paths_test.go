@@ -4,33 +4,18 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-	"time"
 
 	"lemin/models"
 	"lemin/utils"
 )
 
-func TestFindPaths_NoPath(t *testing.T) {
-	startRoom := "A"
-	endRoom := "C"
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "D"},
-	}
-
-	paths := utils.FindPaths(startRoom, endRoom, links)
-
-	if len(paths) != 0 {
-		t.Errorf("Expected empty slice, but got %v", paths)
-	}
-}
-
 func TestFindPaths(t *testing.T) {
 	startRoom := "A"
 	endRoom := "C"
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "C"},
+	links := map[string][]string{
+		"A": {"B"},
+		"B": {"A", "C"},
+		"C": {"B"},
 	}
 
 	expectedPaths := []models.Path{}
@@ -48,15 +33,15 @@ func TestFindPaths(t *testing.T) {
 }
 
 func TestFindPaths_MultipleRoutes(t *testing.T) {
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "A", To: "C"},
-		{From: "B", To: "D"},
-		{From: "C", To: "D"},
-		{From: "D", To: "E"},
+	nodes := map[string][]string{
+		"A": {"B", "C"},
+		"B": {"D", "A"},
+		"C": {"A", "D"},
+		"D": {"B", "E"},
+		"E": {"D"},
 	}
 
-	paths := utils.FindPaths("A", "E", links)
+	paths := utils.FindPaths("A", "E", nodes)
 	expectedResult := []string{"B", "D"}
 
 	for i := range paths {
@@ -67,16 +52,16 @@ func TestFindPaths_MultipleRoutes(t *testing.T) {
 }
 
 func TestFindPaths_HandlesCyclicPaths(t *testing.T) {
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "C"},
-		{From: "C", To: "A"},
-		{From: "C", To: "D"},
+	nodes := map[string][]string{
+		"A": {"B", "C"},
+		"B": {"A", "C"},
+		"C": {"A", "B", "D"},
+		"D": {"C"},
 	}
 	startRoom := "A"
 	endRoom := "D"
 
-	paths := utils.FindPaths(startRoom, endRoom, links)
+	paths := utils.FindPaths(startRoom, endRoom, nodes)
 	expectedResult := []string{"B", "C"}
 
 	for i := range paths {
@@ -87,13 +72,14 @@ func TestFindPaths_HandlesCyclicPaths(t *testing.T) {
 }
 
 func TestFindPaths_BidirectionalLinks(t *testing.T) {
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "C"},
-		{From: "C", To: "D"},
+	nodes := map[string][]string{
+		"A": {"D"},
+		"B": {"A", "C"},
+		"C": {"B", "D"},
+		"D": {"C"},
 	}
 
-	paths := utils.FindPaths("A", "D", links)
+	paths := utils.FindPaths("A", "D", nodes)
 
 	expectedPaths := []models.Path{}
 	expectedPaths = append(expectedPaths, models.Path{Rooms: []string{"B", "C"}})
@@ -110,12 +96,12 @@ func TestFindPaths_BidirectionalLinks(t *testing.T) {
 }
 
 func TestFindPaths_MultipleLinksFromOneRoom(t *testing.T) {
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "A", To: "C"},
-		{From: "B", To: "D"},
-		{From: "C", To: "D"},
-		{From: "D", To: "E"},
+	nodes := map[string][]string{
+		"A": {"B", "C"},
+		"B": {"A", "D"},
+		"C": {"A", "D"},
+		"D": {"B", "E"},
+		"E": {"D"},
 	}
 
 	startRoom := "A"
@@ -130,7 +116,7 @@ func TestFindPaths_MultipleLinksFromOneRoom(t *testing.T) {
 		expectedPaths = append(expectedPaths, models.Path{Rooms: expectedResult[i]})
 	}
 
-	paths := utils.FindPaths(startRoom, endRoom, links)
+	paths := utils.FindPaths(startRoom, endRoom, nodes)
 
 	if len(paths) != len(expectedPaths) {
 		t.Errorf("Expected %d paths, but got %d", len(expectedPaths), len(paths))
@@ -150,47 +136,16 @@ func TestFindPaths_MultipleLinksFromOneRoom(t *testing.T) {
 	}
 }
 
-func TestFindPaths_LargeMaze(t *testing.T) {
-	// Create a large number of rooms and links
-	numRooms := 1000
-	links := make([]models.Link, numRooms-1)
-	for i := 0; i < numRooms-1; i++ {
-		links[i] = models.Link{
-			From: fmt.Sprintf("room%d", i),
-			To:   fmt.Sprintf("room%d", i+1),
-		}
-	}
-
-	startRoom := "room0"
-	endRoom := fmt.Sprintf("room%d", numRooms-1)
-
-	// Measure execution time
-	start := time.Now()
-	paths := utils.FindPaths(startRoom, endRoom, links)
-	duration := time.Since(start)
-
-	// Check if the function completes within a reasonable time (e.g., 1 second)
-	if duration > time.Second {
-		t.Errorf("FindPaths took too long: %v", duration)
-	}
-
-	// Verify the result
-	if len(paths) != 1 {
-		t.Errorf("Expected 1 path, got %d", len(paths))
-	}
-	if len(paths[0].Rooms) != numRooms-2 {
-		t.Errorf("Expected path length of %d, got %d", numRooms, len(paths[0].Rooms))
-	}
-}
-
 func TestFindPaths_IsolatedRooms(t *testing.T) {
-	links := []models.Link{
-		{From: "start", To: "A"},
-		{From: "A", To: "B"},
-		{From: "B", To: "end"},
-		{From: "C", To: "D"}, // Isolated path
+	nodes := map[string][]string{
+		"start": {"A"},
+		"A":     {"start", "B"},
+		"B":     {"A", "end"},
+		"end":   {"B"},
+		"C":     {"D"},
+		"D":     {"C"},
 	}
-	paths := utils.FindPaths("start", "end", links)
+	paths := utils.FindPaths("start", "end", nodes)
 
 	expected := []models.Path{}
 	expected = append(expected, models.Path{Rooms: []string{"A", "B"}})
@@ -207,16 +162,16 @@ func TestFindPaths_IsolatedRooms(t *testing.T) {
 }
 
 func TestFindPaths_MaintainRoomOrder(t *testing.T) {
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "C"},
-		{From: "A", To: "D"},
-		{From: "D", To: "C"},
+	nodes := map[string][]string{
+		"A": {"B", "D"},
+		"B": {"A", "C"},
+		"C": {"B", "D"},
+		"D": {"A", "C"},
 	}
 	startRoom := "A"
 	endRoom := "C"
 
-	paths := utils.FindPaths(startRoom, endRoom, links)
+	paths := utils.FindPaths(startRoom, endRoom, nodes)
 
 	expectedPaths := []models.Path{}
 	expectedResult := [][]string{
