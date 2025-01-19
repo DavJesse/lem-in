@@ -112,8 +112,11 @@ func main() {
 		}
 	}
 
+	// Extract nodes of graph
+	nodes := utils.AsignNodes(links)
+
 	// Find all possible paths
-	paths := utils.FindPaths(startRoom, endRoom, links)
+	paths := utils.FindPaths(startRoom, endRoom, nodes)
 	if len(paths) == 0 {
 		fmt.Println("ERROR: no valid path found between start and end")
 		return
