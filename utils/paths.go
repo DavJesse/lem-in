@@ -2,8 +2,9 @@ package utils
 
 import (
 	"errors"
-	"lemin/models"
 	"log"
+
+	"lemin/models"
 )
 
 func FindPath(startRoom string, endRoom string, links []models.Link, visited []string) (models.Path, error) {
@@ -69,14 +70,6 @@ func FindPath(startRoom string, endRoom string, links []models.Link, visited []s
 				current = link.From
 			}
 		}
-
-		// Detect if path links to end room
-		log.Printf("%#v --- Link from: %#v", current, endRoom)
-
-		//log.Printf("%#v --- here2", current)
-
-		log.Printf("From: %s", link.From)
-		log.Printf("To: %s", link.To)
 
 	}
 
