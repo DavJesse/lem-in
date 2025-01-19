@@ -354,3 +354,24 @@ func TestAsignNodes_WithLargeNumberOfLinks(t *testing.T) {
 		}
 	}
 }
+
+func TestAsignNodes_WithSimilarNames(t *testing.T) {
+	links := []models.Link{
+		{From: "room1", To: "room2"},
+		{From: "room1", To: "room10"},
+		{From: "room10", To: "room11"},
+		{From: "room2", To: "room3"},
+	}
+
+	result := utils.AsignNodes(links)
+
+	expected := map[string][]string{
+		"room1":  {"room2", "room10"},
+		"room10": {"room11"},
+		"room2":  {"room3"},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("AsignNodes failed to maintain correct assignments for similar node names. Got %v, want %v", result, expected)
+	}
+}
