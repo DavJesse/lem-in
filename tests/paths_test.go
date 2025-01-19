@@ -414,3 +414,19 @@ func TestAsignNodes_PreservesExistingAssignments(t *testing.T) {
 		t.Errorf("AsignNodes did not preserve existing assignments. Got %v, want %v", result, expected)
 	}
 }
+
+func TestAsignNodes_DoesNotModifyLinks(t *testing.T) {
+	links := []models.Link{
+		{From: "start", To: "A"},
+		{From: "A", To: "B"},
+		{From: "B", To: "end"},
+	}
+	originalLinks := make([]models.Link, len(links))
+	copy(originalLinks, links)
+
+	utils.AsignNodes(links)
+
+	if !reflect.DeepEqual(links, originalLinks) {
+		t.Errorf("AsignNodes modified the input links array. Expected %v, got %v", originalLinks, links)
+	}
+}
