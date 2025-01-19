@@ -79,17 +79,50 @@ func FindPath(startRoom string, endRoom string, links []models.Link, visited []s
 	return path, err
 }
 
-func FindPaths(startRoom string, endRoom string, links []models.Link) []models.Path {
+func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []models.Path {
 	// Initialize utility variables
 	var paths []models.Path
 	var visited []string
 
-	// Extract paths
-	path, err := FindPath(startRoom, endRoom, links, visited)
-	if err != nil {
-		log.Fatal(err)
+	// Handle errors related to start and end rooms
+	if startRoom == endRoom {
+		log.Fatal("ERROR: 'Start' and 'End' rooms identical")
 	}
-	paths = append(paths, path)
+
+	if _, exists := nodes[startRoom]; !exists {
+		log.Fatal("ERROR: 'Start' room not included in source file")
+	}
+
+	if _, exists := nodes[endRoom]; !exists {
+		log.Fatal("ERROR: 'End' room not included in source file")
+	}
+
+	rooms := nodes[startRoom]
+
+	for _, room := range rooms {
+		var path models.Path
+		if Discovered(visited, room) {
+			continue
+		}
+		visited = append(visited, room)
+		path.Rooms = append(path.Rooms, room)
+
+		subRooms, exists := nodes[room]
+		for exists {
+			for _, subRoom := range subRooms {
+				if Discovered(visited, subRoom) {
+					continue
+				}
+
+				if subRoom == endRoom {
+					break
+				}
+				visited = append(visited, subRoom)
+				path.Rooms = append(path.Rooms, subRoom)
+			}
+		}
+		paths = append(paths, path)
+	}
 
 	return paths
 }
