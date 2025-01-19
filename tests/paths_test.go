@@ -247,3 +247,19 @@ func TestAsignNodes_EmptyLinks(t *testing.T) {
 		t.Errorf("Expected empty map, but got map with %d elements", len(result))
 	}
 }
+
+func TestAsignNodes_SingleLink(t *testing.T) {
+	links := []models.Link{
+		{From: "A", To: "B"},
+	}
+
+	result := utils.AsignNodes(links)
+
+	expected := map[string][]string{
+		"A": {"B"},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("AsignNodes() = %v, want %v", result, expected)
+	}
+}
