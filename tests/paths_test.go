@@ -394,3 +394,23 @@ func TestAsignNodes_WithEmptyNodeNames(t *testing.T) {
 		t.Errorf("AsignNodes() = %v, want %v", result, expected)
 	}
 }
+
+func TestAsignNodes_PreservesExistingAssignments(t *testing.T) {
+	links := []models.Link{
+		{From: "A", To: "B"},
+		{From: "A", To: "C"},
+		{From: "B", To: "D"},
+		{From: "A", To: "E"},
+	}
+
+	result := utils.AsignNodes(links)
+
+	expected := map[string][]string{
+		"A": {"B", "C", "E"},
+		"B": {"D"},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("AsignNodes did not preserve existing assignments. Got %v, want %v", result, expected)
+	}
+}
