@@ -237,3 +237,13 @@ func TestFindPaths_MaintainRoomOrder(t *testing.T) {
 		}
 	}
 }
+
+func TestAsignNodes_EmptyLinks(t *testing.T) {
+	links := []models.Link{}
+
+	result := utils.AsignNodes(links)
+
+	if len(result) != 0 {
+		t.Errorf("Expected empty map, but got map with %d elements", len(result))
+	}
+}
