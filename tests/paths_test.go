@@ -375,3 +375,22 @@ func TestAsignNodes_WithSimilarNames(t *testing.T) {
 		t.Errorf("AsignNodes failed to maintain correct assignments for similar node names. Got %v, want %v", result, expected)
 	}
 }
+
+func TestAsignNodes_WithEmptyNodeNames(t *testing.T) {
+	links := []models.Link{
+		{From: "", To: "B"},
+		{From: "A", To: ""},
+		{From: "", To: ""},
+	}
+
+	result := utils.AsignNodes(links)
+
+	expected := map[string][]string{
+		"":  {"B", ""},
+		"A": {""},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("AsignNodes() = %v, want %v", result, expected)
+	}
+}
