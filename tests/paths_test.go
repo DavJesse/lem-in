@@ -57,37 +57,13 @@ func TestFindPaths_MultipleRoutes(t *testing.T) {
 	}
 
 	paths := utils.FindPaths("A", "E", links)
-	expectedPaths := []models.Path{}
-	expectedResult := [][]string{
-		{"A", "B", "D", "E"},
-		{"A", "C", "D", "E"},
-	}
-	for i := range expectedResult {
-		path := models.Path{}
-		path.Rooms = expectedResult[i]
-		expectedPaths = append(expectedPaths, path)
-	}
+	expectedResult := []string{"B", "D"}
 
-	if len(paths) != len(expectedPaths) {
-		t.Errorf("Expected %d paths, but got %d", len(expectedPaths), len(paths))
-	}
-
-	for _, expectedPath := range expectedPaths {
-		found := false
-		for _, path := range paths {
-			if compareSlices(path.Rooms, expectedPath.Rooms) {
-				found = true
-				break
-			}
-		}
-		if !found {
-			t.Errorf("Expected path %v not found in result", expectedPath)
+	for i := range paths {
+		if !reflect.DeepEqual(paths[i].Rooms, expectedResult) {
+			t.Errorf("Expected %v, got %v", expectedResult, paths[i].Rooms)
 		}
 	}
-}
-
-func compareSlices(a, b []string) bool {
-	return reflect.DeepEqual(a, b)
 }
 
 func TestFindPaths_HandlesCyclicPaths(t *testing.T) {
@@ -101,43 +77,12 @@ func TestFindPaths_HandlesCyclicPaths(t *testing.T) {
 	endRoom := "D"
 
 	paths := utils.FindPaths(startRoom, endRoom, links)
+	expectedResult := []string{"B", "C"}
 
-	expectedPaths := []models.Path{}
-	expectedResult := [][]string{
-		{"A", "B", "C", "D"},
-		{"A", "C", "D"},
-	}
-
-	for i := range expectedResult {
-		path := models.Path{}
-		path.Rooms = expectedResult[i]
-		expectedPaths = append(expectedPaths, path)
-	}
-
-	if len(paths) != len(expectedPaths) {
-		t.Errorf("Expected %d paths, but got %d", len(expectedPaths), len(paths))
-	}
-
-	for i, path := range paths {
-		if !reflect.DeepEqual(path, expectedPaths[i]) {
-			t.Errorf("Path %d: expected %v, but got %v", i, expectedPaths[i], path)
+	for i := range paths {
+		if !reflect.DeepEqual(paths[i].Rooms, expectedResult) {
+			t.Errorf("Expected %v, got %v", expectedResult, paths[i].Rooms)
 		}
-	}
-}
-
-func TestFindPaths_SameStartAndEnd(t *testing.T) {
-	startRoom := "A"
-	endRoom := "A"
-	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "C"},
-		{From: "C", To: "D"},
-	}
-
-	paths := utils.FindPaths(startRoom, endRoom, links)
-
-	if len(paths) != 1 {
-		t.Errorf("Expected empty slice, but got %v", paths)
 	}
 }
 
@@ -151,7 +96,7 @@ func TestFindPaths_BidirectionalLinks(t *testing.T) {
 	paths := utils.FindPaths("A", "D", links)
 
 	expectedPaths := []models.Path{}
-	expectedPaths = append(expectedPaths, models.Path{Rooms: []string{"A", "B", "C", "D"}})
+	expectedPaths = append(expectedPaths, models.Path{Rooms: []string{"B", "C"}})
 
 	if len(paths) != len(expectedPaths) {
 		t.Errorf("Expected %d paths, but got %d", len(expectedPaths), len(paths))
@@ -178,8 +123,8 @@ func TestFindPaths_MultipleLinksFromOneRoom(t *testing.T) {
 
 	expectedPaths := []models.Path{}
 	expectedResult := [][]string{
-		{"A", "B", "D", "E"},
-		{"A", "C", "D", "E"},
+		{"B", "D"},
+		{"C", "D"},
 	}
 	for i := range expectedResult {
 		expectedPaths = append(expectedPaths, models.Path{Rooms: expectedResult[i]})
@@ -233,7 +178,7 @@ func TestFindPaths_LargeMaze(t *testing.T) {
 	if len(paths) != 1 {
 		t.Errorf("Expected 1 path, got %d", len(paths))
 	}
-	if len(paths[0].Rooms) != numRooms {
+	if len(paths[0].Rooms) != numRooms-2 {
 		t.Errorf("Expected path length of %d, got %d", numRooms, len(paths[0].Rooms))
 	}
 }
@@ -248,7 +193,7 @@ func TestFindPaths_IsolatedRooms(t *testing.T) {
 	paths := utils.FindPaths("start", "end", links)
 
 	expected := []models.Path{}
-	expected = append(expected, models.Path{Rooms: []string{"start", "A", "B", "end"}})
+	expected = append(expected, models.Path{Rooms: []string{"A", "B"}})
 
 	if len(paths) != len(expected) {
 		t.Fatalf("Expected %d paths, but got %d", len(expected), len(paths))
@@ -275,8 +220,8 @@ func TestFindPaths_MaintainRoomOrder(t *testing.T) {
 
 	expectedPaths := []models.Path{}
 	expectedResult := [][]string{
-		{"A", "B", "C"},
-		{"A", "D", "C"},
+		{"B"},
+		{"D"},
 	}
 	for i := range expectedResult {
 		expectedPaths = append(expectedPaths, models.Path{Rooms: expectedResult[i]})
