@@ -1,23 +1,31 @@
 package utils
 
 import (
+	"errors"
 	"lemin/models"
+	"log"
 )
 
-func FindPath(startRoom string, endRoom string, links []models.Link, visited []string) models.Path {
+func FindPath(startRoom string, endRoom string, links []models.Link, visited []string) (models.Path, error) {
+	// Establish utility variables
 	var current string
 	var path models.Path
+	var err error
+	var isConnected bool
 
 	for _, link := range links {
+		// Follow and record links to start room
+		// Skip visited rooms linked to start
 		if startRoom == link.From || startRoom == link.To {
 			if startRoom == link.From {
-				if Discovered(visited, link.From) {
+				if Discovered(visited, link.To) {
 					continue
 				}
-				visited = append(visited, link.From)
+
 				visited = append(visited, link.To)
 				path.Rooms = append(path.Rooms, link.To)
 				current = link.To
+
 			} else {
 				if Discovered(visited, link.From) {
 					continue
@@ -28,37 +36,66 @@ func FindPath(startRoom string, endRoom string, links []models.Link, visited []s
 			}
 		}
 
+		// Follow and record links to current room
 		if current == link.From || current == link.To {
 			if current == link.From {
-				if Discovered(visited, link.From) {
+				// Check if linked room is visited, or is start room, or is end room
+				// If end room found mark path as connected
+				// Continue
+				if Discovered(visited, link.To) || link.To == startRoom || link.To == endRoom {
+					if link.To == endRoom {
+						isConnected = true
+					}
 					continue
 				}
+
 				visited = append(visited, link.To)
 				path.Rooms = append(path.Rooms, link.To)
 				current = link.To
+
 			} else {
-				if Discovered(visited, link.From) {
+				// Check if linked room is visited, or is start room, or is end room
+				// If end room found mark path as connected
+				// Continue
+				if Discovered(visited, link.From) || link.From == startRoom || link.From == endRoom {
+					if link.From == endRoom {
+						isConnected = true
+					}
 					continue
 				}
+
 				visited = append(visited, link.From)
 				path.Rooms = append(path.Rooms, link.From)
 				current = link.From
 			}
 		}
 
-		if endRoom == link.From || endRoom == link.To {
-			continue
-		}
+		// Detect if path links to end room
+		log.Printf("%#v --- Link from: %#v", current, endRoom)
+
+		//log.Printf("%#v --- here2", current)
+
+		log.Printf("From: %s", link.From)
+		log.Printf("To: %s", link.To)
 
 	}
-	return path
+
+	if !isConnected {
+		err = errors.New("ERROR: Path not connected to 'end' room")
+	}
+	return path, err
 }
 
 func FindPaths(startRoom string, endRoom string, links []models.Link) []models.Path {
+	// Initialize utility variables
 	var paths []models.Path
 	var visited []string
 
-	path := FindPath(startRoom, endRoom, links, visited)
+	// Extract paths
+	path, err := FindPath(startRoom, endRoom, links, visited)
+	if err != nil {
+		log.Fatal(err)
+	}
 	paths = append(paths, path)
 
 	return paths

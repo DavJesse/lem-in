@@ -34,7 +34,7 @@ func TestFindPaths(t *testing.T) {
 	}
 
 	expectedPaths := []models.Path{}
-	expectedPaths = append(expectedPaths, models.Path{Rooms: []string{"A", "B", "C"}})
+	expectedPaths = append(expectedPaths, models.Path{Rooms: []string{"B"}})
 
 	paths := utils.FindPaths(startRoom, endRoom, links)
 
