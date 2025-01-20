@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -69,8 +69,7 @@ func main() {
 	// Parse input file
 	ants, rooms, links, err := utils.ParseInput(os.Args[1])
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 
 	// Find start and end rooms
@@ -82,8 +81,7 @@ func main() {
 	// Find all possible paths
 	paths := utils.FindPaths(startRoom, endRoom, nodes)
 	if len(paths) == 0 {
-		fmt.Println("ERROR: no valid path found between start and end")
-		return
+		log.Fatal("ERROR: no valid path found between start and end")
 	}
 
 	utils.AssignAnts(ants, paths)
@@ -91,8 +89,7 @@ func main() {
 	// Print the input data
 	content, err := utils.ValidContent(os.Args[1])
 	if err != nil {
-		fmt.Println("ERROR: invalid data format")
-		return
+		log.Fatal("ERROR: invalid data format")
 	}
 
 	// Print number of ants and room configuration
@@ -114,7 +111,7 @@ func main() {
 	moves := utils.MoveAnts(ants, paths)
 
 	// Move ants and print moves
-	//moves := moveAnts(ants, paths)
+	// moves := moveAnts(ants, paths)
 	for _, move := range moves {
 		fmt.Println(strings.Join(move, " "))
 	}
