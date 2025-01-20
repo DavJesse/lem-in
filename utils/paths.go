@@ -59,11 +59,26 @@ func AsignNodes(links []models.Link) map[string][]string {
 	nodes := make(map[string][]string)
 
 	for _, link := range links {
-		_, exists := nodes[link.From]
-		if exists {
-			nodes[link.From] = append(nodes[link.From], link.To)
+		// Create nodes and links for origin
+		rooms1, exists1 := nodes[link.From]
+		if exists1 {
+			// Avoid duplicating rooms
+			if !Discovered(rooms1, link.To) {
+				nodes[link.From] = append(nodes[link.From], link.To)
+			}
 		} else {
 			nodes[link.From] = []string{link.To}
+		}
+
+		// Create nodes and links for destination
+		rooms2, exists2 := nodes[link.To]
+		if exists2 {
+			// Avoid duplicating rooms
+			if !Discovered(rooms2, link.From) {
+				nodes[link.To] = append(nodes[link.To], link.From)
+			}
+		} else {
+			nodes[link.To] = []string{link.From}
 		}
 	}
 
