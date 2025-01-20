@@ -1,83 +1,10 @@
 package utils
 
 import (
-	"errors"
 	"log"
 
 	"lemin/models"
 )
-
-func FindPath(startRoom string, endRoom string, links []models.Link, visited []string) (models.Path, error) {
-	// Establish utility variables
-	var current string
-	var path models.Path
-	var err error
-	var isConnected bool
-
-	for _, link := range links {
-		// Follow and record links to start room
-		// Skip visited rooms linked to start
-		if startRoom == link.From || startRoom == link.To {
-			if startRoom == link.From {
-				if Discovered(visited, link.To) {
-					continue
-				}
-
-				visited = append(visited, link.To)
-				path.Rooms = append(path.Rooms, link.To)
-				current = link.To
-
-			} else {
-				if Discovered(visited, link.From) {
-					continue
-				}
-				visited = append(visited, link.From)
-				path.Rooms = append(path.Rooms, link.From)
-				current = link.From
-			}
-		}
-
-		// Follow and record links to current room
-		if current == link.From || current == link.To {
-			if current == link.From {
-				// Check if linked room is visited, or is start room, or is end room
-				// If end room found mark path as connected
-				// Continue
-				if Discovered(visited, link.To) || link.To == startRoom || link.To == endRoom {
-					if link.To == endRoom {
-						isConnected = true
-					}
-					continue
-				}
-
-				visited = append(visited, link.To)
-				path.Rooms = append(path.Rooms, link.To)
-				current = link.To
-
-			} else {
-				// Check if linked room is visited, or is start room, or is end room
-				// If end room found mark path as connected
-				// Continue
-				if Discovered(visited, link.From) || link.From == startRoom || link.From == endRoom {
-					if link.From == endRoom {
-						isConnected = true
-					}
-					continue
-				}
-
-				visited = append(visited, link.From)
-				path.Rooms = append(path.Rooms, link.From)
-				current = link.From
-			}
-		}
-
-	}
-
-	if !isConnected {
-		err = errors.New("ERROR: Path not connected to 'end' room")
-	}
-	return path, err
-}
 
 func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []models.Path {
 	// Initialize utility variables
