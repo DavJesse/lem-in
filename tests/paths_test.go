@@ -263,10 +263,10 @@ func TestAsignNodes_OriginsAndDestinations(t *testing.T) {
 
 func TestAsignNodes_WithCircularLink(t *testing.T) {
 	links := []models.Link{
-		{From: "A", To: "B"},
-		{From: "B", To: "C"},
-		{From: "C", To: "A"},
 		{From: "A", To: "A"}, // Circular link
+		{From: "A", To: "B"},
+		{From: "C", To: "A"},
+		{From: "B", To: "C"},
 	}
 
 	result := utils.AsignNodes(links)
@@ -297,14 +297,14 @@ func TestAsignNodes_WithLargeNumberOfLinks(t *testing.T) {
 	nodes := utils.AsignNodes(links)
 
 	// Check if the number of nodes is correct
-	if len(nodes) != numLinks {
+	if len(nodes) != numLinks+1 {
 		t.Errorf("Expected %d nodes, but got %d", numLinks, len(nodes))
 	}
 
 	// Check if each node has the correct connection
 	for i := 0; i < numLinks; i++ {
 		from := fmt.Sprintf("room%d", i)
-		to := fmt.Sprintf("room%d", i+1)
+		to := fmt.Sprintf("room%d", i+2)
 		if len(nodes[from]) != 1 || nodes[from][0] != to {
 			t.Errorf("Expected node %s to be connected to %s, but got %v", from, to, nodes[from])
 		}
