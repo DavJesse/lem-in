@@ -109,3 +109,18 @@ func ParseInput(filename string) (int, []models.Room, []models.Link, error) {
 
 	return ants, rooms, links, nil
 }
+
+func FindStartAndEndRooms(rooms []models.Room) (string, string) {
+	var startRoom, endRoom string
+
+	// Identify 'start' and 'end' based on struct property
+	for _, room := range rooms {
+		if room.IsStart {
+			startRoom = room.Name
+		}
+		if room.IsEnd {
+			endRoom = room.Name
+		}
+	}
+	return startRoom, endRoom
+}

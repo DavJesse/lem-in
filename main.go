@@ -77,15 +77,7 @@ func main() {
 	}
 
 	// Find start and end rooms
-	var startRoom, endRoom string
-	for _, room := range rooms {
-		if room.IsStart {
-			startRoom = room.Name
-		}
-		if room.IsEnd {
-			endRoom = room.Name
-		}
-	}
+	startRoom, endRoom := utils.FindStartAndEndRooms(rooms)
 
 	// Extract nodes of graph
 	nodes := utils.AsignNodes(links)
