@@ -213,6 +213,7 @@ func TestAsignNodes_SingleLink(t *testing.T) {
 
 	expected := map[string][]string{
 		"A": {"B"},
+		"B": {"A"},
 	}
 
 	if !reflect.DeepEqual(result, expected) {
@@ -232,7 +233,10 @@ func TestAsignNodes_MultipleLinksFromSameSource(t *testing.T) {
 
 	expected := map[string][]string{
 		"A": {"B", "C", "D"},
-		"B": {"E"},
+		"B": {"A", "E"},
+		"C": {"A"},
+		"D": {"A"},
+		"E": {"B"},
 	}
 
 	if !reflect.DeepEqual(result, expected) {
@@ -272,9 +276,9 @@ func TestAsignNodes_WithCircularLink(t *testing.T) {
 	result := utils.AsignNodes(links)
 
 	expected := map[string][]string{
-		"A": {"B", "A"},
-		"B": {"C"},
-		"C": {"A"},
+		"A": {"A", "B", "C"},
+		"B": {"A", "C"},
+		"C": {"A", "B"},
 	}
 
 	if !reflect.DeepEqual(result, expected) {
@@ -323,8 +327,10 @@ func TestAsignNodes_WithSimilarNames(t *testing.T) {
 
 	expected := map[string][]string{
 		"room1":  {"room2", "room10"},
-		"room10": {"room11"},
-		"room2":  {"room3"},
+		"room2":  {"room1", "room3"},
+		"room3":  {"room2"},
+		"room10": {"room1", "room11"},
+		"room11": {"room10"},
 	}
 
 	if !reflect.DeepEqual(result, expected) {
@@ -342,8 +348,9 @@ func TestAsignNodes_WithEmptyNodeNames(t *testing.T) {
 	result := utils.AsignNodes(links)
 
 	expected := map[string][]string{
-		"":  {"B", ""},
+		"":  {"A", "B", ""},
 		"A": {""},
+		"B": {""},
 	}
 
 	if !reflect.DeepEqual(result, expected) {
@@ -363,7 +370,10 @@ func TestAsignNodes_PreservesExistingAssignments(t *testing.T) {
 
 	expected := map[string][]string{
 		"A": {"B", "C", "E"},
-		"B": {"D"},
+		"B": {"A", "D"},
+		"C": {"A"},
+		"D": {"B"},
+		"E": {"A"},
 	}
 
 	if !reflect.DeepEqual(result, expected) {
