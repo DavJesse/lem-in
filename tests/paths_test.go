@@ -73,7 +73,7 @@ func TestFindPaths_HandlesCyclicPaths(t *testing.T) {
 
 func TestFindPaths_BidirectionalLinks(t *testing.T) {
 	nodes := map[string][]string{
-		"A": {"D"},
+		"A": {"B"},
 		"B": {"A", "C"},
 		"C": {"B", "D"},
 		"D": {"C"},
@@ -99,7 +99,8 @@ func TestFindPaths_MultipleLinksFromOneRoom(t *testing.T) {
 	nodes := map[string][]string{
 		"A": {"B", "C"},
 		"B": {"A", "D"},
-		"C": {"A", "D"},
+		"C": {"A", "F"},
+		"F": {"C", "E"},
 		"D": {"B", "E"},
 		"E": {"D"},
 	}
@@ -110,7 +111,7 @@ func TestFindPaths_MultipleLinksFromOneRoom(t *testing.T) {
 	expectedPaths := []models.Path{}
 	expectedResult := [][]string{
 		{"B", "D"},
-		{"C", "D"},
+		{"C", "F"},
 	}
 	for i := range expectedResult {
 		expectedPaths = append(expectedPaths, models.Path{Rooms: expectedResult[i]})
