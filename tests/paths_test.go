@@ -306,8 +306,8 @@ func TestAsignNodes_WithSimilarNames(t *testing.T) {
 
 func TestAsignNodes_WithEmptyNodeNames(t *testing.T) {
 	links := []models.Link{
-		{From: "", To: "B"},
 		{From: "A", To: ""},
+		{From: "", To: "B"},
 		{From: "", To: ""},
 	}
 
