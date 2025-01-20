@@ -1,39 +1,12 @@
 package utils
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
 	"lemin/models"
 )
-
-func ValidContent(filename string) ([]string, error) {
-	fileContent, err := os.Open(filename)
-	if err != nil {
-		return nil, fmt.Errorf("error reading file: %v", err)
-	}
-	defer fileContent.Close()
-
-	validContent := []string{}
-	scanner := bufio.NewScanner(fileContent)
-
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if line == "" {
-			continue
-		}
-		validContent = append(validContent, line)
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("error scanning file: %v", err)
-	}
-
-	return validContent, nil
-}
 
 func ParseInput(filename string) (int, []models.Room, []models.Link, error) {
 	// Check file for valid content
