@@ -82,7 +82,6 @@ func FindPath(startRoom string, endRoom string, links []models.Link, visited []s
 func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []models.Path {
 	// Initialize utility variables
 	var paths []models.Path
-	var visited []string
 
 	// Handle errors related to start and end rooms
 	if startRoom == endRoom {
@@ -99,29 +98,22 @@ func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []mo
 
 	rooms := nodes[startRoom]
 
+	// Explore rooms liked to start room
 	for _, room := range rooms {
 		var path models.Path
-		if Discovered(visited, room) {
-			continue
-		}
-		visited = append(visited, room)
+		visited := []string{startRoom}
+
+		// Append first room linked to start
 		path.Rooms = append(path.Rooms, room)
+		visited = append(visited, room)
 
-		subRooms, exists := nodes[room]
-		for exists {
-			for _, subRoom := range subRooms {
-				if Discovered(visited, subRoom) {
-					continue
-				}
+		// using depth-first search, update path
+		path, _ = UpdatePath(room, endRoom, &visited, nodes, path)
 
-				if subRoom == endRoom {
-					break
-				}
-				visited = append(visited, subRoom)
-				path.Rooms = append(path.Rooms, subRoom)
-			}
+		if path.Rooms != nil {
+			// log.Printf("Path found: %#v", path.Rooms)
+			paths = append(paths, path)
 		}
-		paths = append(paths, path)
 	}
 
 	return paths
@@ -149,4 +141,39 @@ func AsignNodes(links []models.Link) map[string][]string {
 	}
 
 	return nodes
+}
+
+func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][]string, path models.Path) (models.Path, bool) {
+	var end bool
+	rooms := nodes[startRoom]
+
+	for _, room := range rooms {
+		// Ignore visited rooms and links to start room
+		if Discovered(*visited, room) || room == startRoom {
+			continue
+		}
+
+		// Break loop when end room is encountered; end of path
+		if room == endRoom {
+			*visited = append(*visited, room)
+			end = true
+			break
+		}
+
+		// Update visit log and path
+		*visited = append(*visited, room)
+		path.Rooms = append(path.Rooms, room)
+
+		// Recursively update path (dpth-first) until end room is found
+		if !end {
+			path, end = UpdatePath(room, endRoom, visited, nodes, path)
+		}
+	}
+
+	// Return nil path for hanging paths; i.e not connected to end
+	if !Discovered(*visited, endRoom) {
+		return models.Path{}, true
+	}
+
+	return path, end
 }
