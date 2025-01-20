@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -30,4 +31,10 @@ func ValidContent(filename string) ([]string, error) {
 	}
 
 	return validContent, nil
+}
+
+func CheckArgs() {
+	if len(os.Args) != 2 {
+		log.Fatal("ERROR: invalid data format, please provide a file name")
+	}
 }

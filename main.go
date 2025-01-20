@@ -64,10 +64,7 @@ func moveAnts(ants int, paths [][]string) [][]string {
 
 func main() {
 	// Check for valid number command-line arguments
-	if len(os.Args) != 2 {
-		fmt.Println("ERROR: invalid data format, please provide a file name")
-		return
-	}
+	utils.CheckArgs()
 
 	// Parse input file
 	ants, rooms, links, err := utils.ParseInput(os.Args[1])
