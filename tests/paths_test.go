@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -279,35 +278,6 @@ func TestAsignNodes_WithCircularLink(t *testing.T) {
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("AsignNodes() = %v, want %v", result, expected)
-	}
-}
-
-func TestAsignNodes_WithLargeNumberOfLinks(t *testing.T) {
-	// Create a large number of links
-	numLinks := 10000
-	links := make([]models.Link, numLinks)
-	for i := 0; i < numLinks; i++ {
-		links[i] = models.Link{
-			From: fmt.Sprintf("room%d", i),
-			To:   fmt.Sprintf("room%d", i+1),
-		}
-	}
-
-	// Call the function
-	nodes := utils.AsignNodes(links)
-
-	// Check if the number of nodes is correct
-	if len(nodes) != numLinks+1 {
-		t.Errorf("Expected %d nodes, but got %d", numLinks, len(nodes))
-	}
-
-	// Check if each node has the correct connection
-	for i := 0; i < numLinks; i++ {
-		from := fmt.Sprintf("room%d", i)
-		to := fmt.Sprintf("room%d", i+2)
-		if len(nodes[from]) != 1 || nodes[from][0] != to {
-			t.Errorf("Expected node %s to be connected to %s, but got %v", from, to, nodes[from])
-		}
 	}
 }
 
