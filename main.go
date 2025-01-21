@@ -84,9 +84,10 @@ func main() {
 		log.Fatal("ERROR: no valid path found between start and end")
 	}
 
+	// Assign ants to paths
 	utils.AssignAnts(ants, paths)
 
-	// Print the input data
+	// Extract and Print the input data
 	content, err := utils.ValidContent(os.Args[1])
 	if err != nil {
 		log.Fatal("ERROR: invalid data format")
