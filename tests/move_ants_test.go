@@ -76,3 +76,30 @@ func TestMoveAnts(t *testing.T) {
 		t.Errorf("MoveAnts() = %#v, want %#v", result, expected)
 	}
 }
+
+func TestMoveAnts_MoreAntsThanRooms(t *testing.T) {
+	paths := []models.Path{
+		{
+			Rooms: []string{"A", "B", "end"},
+			Ants:  []string{"1", "2", "3"},
+		},
+		{
+			Rooms: []string{"C", "D", "end"},
+			Ants:  []string{"4", "5"},
+		},
+	}
+
+	expected := []string{
+		"L1-A L4-C",
+		"L1-B L4-D L2-A L5-C",
+		"L1-end L4-end L2-B L5-D L3-A",
+		"L2-end L4-end L2-end L5-end L3-B",
+		"L3-end",
+	}
+
+	result := utils.MoveAnts(paths)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("MoveAnts() = %#v, want %#v", result, expected)
+	}
+}
