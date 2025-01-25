@@ -18,7 +18,7 @@ func MoveAnts(paths []models.Path) []string {
 				position := pathInd - antInd - 1
 
 				if position >= 0 && position < len(path.Rooms) {
-					line = append(line, fmt.Sprintf("L%v - %v", ant, path.Rooms[position]))
+					line = append(line, fmt.Sprintf("L%v-%v", ant, path.Rooms[position]))
 				}
 
 			}
