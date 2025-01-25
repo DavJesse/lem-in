@@ -34,7 +34,7 @@ func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []mo
 		if Discovered(visited, room) {
 			continue
 		}
-		
+
 		// Append first room linked to start
 		path.Rooms = append(path.Rooms, room)
 		if !Discovered(visited, room) {
