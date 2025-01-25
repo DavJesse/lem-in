@@ -24,21 +24,27 @@ func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []mo
 	}
 
 	rooms := nodes[startRoom]
+	visited := []string{startRoom}
 
 	// Explore rooms liked to start room
 	for _, room := range rooms {
 		var path models.Path
-		visited := []string{startRoom}
 
+		// Abandon paths with visited rooms
+		if Discovered(visited, room) {
+			continue
+		}
+		
 		// Append first room linked to start
 		path.Rooms = append(path.Rooms, room)
-		visited = append(visited, room)
+		if !Discovered(visited, room) {
+			visited = append(visited, room)
+		}
 
 		// using depth-first search, update path
-		path, _ = UpdatePath(room, endRoom, &visited, nodes, path)
+		path, end := UpdatePath(room, endRoom, &visited, nodes, path)
 
-		if path.Rooms != nil {
-			// log.Printf("Path found: %#v", path.Rooms)
+		if end && path.Rooms != nil {
 			paths = append(paths, path)
 		}
 	}
@@ -97,7 +103,6 @@ func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][
 
 		// Break loop when end room is encountered; end of path
 		if room == endRoom {
-			*visited = append(*visited, room)
 			path.Rooms = append(path.Rooms, endRoom)
 			end = true
 			break
@@ -114,7 +119,7 @@ func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][
 	}
 
 	// Return nil path for hanging paths; i.e not connected to end
-	if !Discovered(*visited, endRoom) {
+	if !end {
 		return models.Path{}, true
 	}
 
