@@ -98,6 +98,7 @@ func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][
 		// Break loop when end room is encountered; end of path
 		if room == endRoom {
 			*visited = append(*visited, room)
+			path.Rooms = append(path.Rooms, endRoom)
 			end = true
 			break
 		}
