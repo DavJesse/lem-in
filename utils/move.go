@@ -33,3 +33,10 @@ func MoveAnts(paths []models.Path) []string {
 	}
 	return movements
 }
+
+// Prints out ant movement to terminal
+func SimulateMovement(moves []string) {
+	for _, move := range moves {
+		fmt.Println(move)
+	}
+}
