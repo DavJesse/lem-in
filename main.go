@@ -9,59 +9,6 @@ import (
 	"lemin/utils"
 )
 
-func moveAnts(ants int, paths [][]string) [][]string {
-	if len(paths) == 0 {
-		return nil
-	}
-
-	// Sort paths by length
-	for i := 0; i < len(paths)-1; i++ {
-		for j := i + 1; j < len(paths); j++ {
-			if len(paths[i]) > len(paths[j]) {
-				paths[i], paths[j] = paths[j], paths[i]
-			}
-		}
-	}
-
-	// Initialize ants
-	type ant struct {
-		id       int
-		pathIdx  int
-		position int
-	}
-
-	antList := make([]ant, ants)
-	for i := range antList {
-		antList[i] = ant{
-			id:       i + 1,
-			pathIdx:  0,
-			position: -1,
-		}
-	}
-
-	var moves [][]string
-	for {
-		finished := true
-		var currentMoves []string
-
-		for i := range antList {
-			if antList[i].position < len(paths[0])-1 {
-				finished = false
-				antList[i].position++
-				move := fmt.Sprintf("L%d-%s", antList[i].id, paths[0][antList[i].position])
-				currentMoves = append(currentMoves, move)
-			}
-		}
-
-		if finished {
-			break
-		}
-		moves = append(moves, currentMoves)
-	}
-
-	return moves
-}
-
 func main() {
 	// Check for valid number command-line arguments
 	utils.CheckArgs()
