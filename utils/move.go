@@ -2,15 +2,17 @@ package utils
 
 import (
 	"fmt"
-	"lemin/models"
 	"strings"
+
+	"lemin/models"
 )
 
 func MoveAnts(paths []models.Path) []string {
 	var line []string
 	var movements []string
-	scope := len(paths[len(paths)-1].Rooms)
+	scope := len(paths[len(paths)-1].Rooms) + 1 // Length of longest path, add 1 to include start room
 
+	// Try different positions to map valid movements of ants
 	for pathInd := 1; pathInd <= scope; pathInd++ {
 
 		for _, path := range paths {
