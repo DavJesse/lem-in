@@ -77,24 +77,24 @@ func TestMoveAnts(t *testing.T) {
 	}
 }
 
-func TestMoveAnts_MoreAntsThanRooms(t *testing.T) {
+func TestMoveAnts_WithEqualPathLengths(t *testing.T) {
 	paths := []models.Path{
 		{
-			Rooms: []string{"A", "B", "end"},
-			Ants:  []string{"1", "2", "3"},
+			Rooms: []string{"A", "B", "C", "end"},
+			Ants:  []string{"1", "2"},
 		},
 		{
-			Rooms: []string{"C", "D", "end"},
-			Ants:  []string{"4", "5"},
+			Rooms: []string{"D", "E", "F", "end"},
+			Ants:  []string{"3"},
 		},
 	}
 
 	expected := []string{
-		"L1-A L4-C",
-		"L1-B L4-D L2-A L5-C",
-		"L1-end L4-end L2-B L5-D L3-A",
-		"L2-end L4-end L2-end L5-end L3-B",
-		"L3-end",
+		"L1-A L3-D",
+		"L1-B L3-E L2-A",
+		"L1-C L3-F L2-B",
+		"L1-end L3-end L2-C",
+		"L2-end",
 	}
 
 	result := utils.MoveAnts(paths)
