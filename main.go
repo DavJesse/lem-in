@@ -84,6 +84,9 @@ func main() {
 		log.Fatal("ERROR: no valid path found between start and end")
 	}
 
+	// Sort paths by length
+	utils.SortPaths(paths)
+
 	// Assign ants to paths
 	utils.AssignAnts(ants, paths)
 
@@ -109,11 +112,9 @@ func main() {
 	}
 	fmt.Println()
 
-	moves := utils.MoveAnts(ants, paths)
+	// Extract moves
+	moves := utils.MoveAnts(paths)
 
-	// Move ants and print moves
-	// moves := moveAnts(ants, paths)
-	for _, move := range moves {
-		fmt.Println(strings.Join(move, " "))
-	}
+	// Simuluate ant movement
+	utils.SimulateMovement(moves)
 }
