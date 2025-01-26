@@ -16,7 +16,7 @@ func TestMoveAnts_SinglePathOneAntOneRoom(t *testing.T) {
 		},
 	}
 
-	expected := []string{"L1 - End"}
+	expected := []string{"L1-End"}
 	result := utils.MoveAnts(paths)
 
 	if !reflect.DeepEqual(result, expected) {
@@ -38,9 +38,9 @@ func TestMoveAnts_MultiplePaths(t *testing.T) {
 
 	expected := []string{
 		"L1-A L3-X",
-		"L1-B L3-Y L2-A",
-		"L1-end L3-Z, L2-B",
-		"L3-end, L2-end",
+		"L1-B L2-A L3-Y",
+		"L1-end L2-B L3-Z",
+		"L2-end L3-end",
 	}
 
 	result := utils.MoveAnts(paths)
@@ -64,9 +64,9 @@ func TestMoveAnts(t *testing.T) {
 
 	expected := []string{
 		"L1-A L3-D",
-		"L1-B L3-E L2-A",
-		"L1-C L3-F L2-B",
-		"L1-end L3-end L2-C",
+		"L1-B L2-A L3-E",
+		"L1-C L2-B L3-F",
+		"L1-end L2-C L3-end",
 		"L2-end",
 	}
 
@@ -91,9 +91,9 @@ func TestMoveAnts_WithEqualPathLengths(t *testing.T) {
 
 	expected := []string{
 		"L1-A L3-D",
-		"L1-B L3-E L2-A",
-		"L1-C L3-F L2-B",
-		"L1-end L3-end L2-C",
+		"L1-B L2-A L3-E",
+		"L1-C L2-B L3-F",
+		"L1-end L2-C L3-end",
 		"L2-end",
 	}
 
