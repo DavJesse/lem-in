@@ -96,6 +96,10 @@ func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][
 	rooms := nodes[startRoom]
 
 	for _, room := range rooms {
+		if startRoom == "k" {
+			log.Printf("Path yeilded from 0: %#v", path.Rooms)
+			log.Printf("Visited: %#v", visited)
+		}
 		// Ignore visited rooms and links to start room
 		if Discovered(*visited, room) || room == startRoom {
 			continue
