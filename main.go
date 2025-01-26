@@ -89,6 +89,7 @@ func main() {
 
 	// Assign ants to paths
 	utils.AssignAnts(ants, paths)
+	log.Printf("Paths: %#v", paths)
 
 	// Extract and Print the input data
 	content, err := utils.ValidContent(os.Args[1])
