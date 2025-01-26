@@ -42,13 +42,23 @@ func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []mo
 		}
 
 		// using depth-first search, update path
+		//log.Printf("Before UpdatePath for room %s: Path = %v", room, path.Rooms)
 		path, end := UpdatePath(room, endRoom, &visited, nodes, path)
+		//log.Printf("After UpdatePath for room %s: Path = %v, end = %v", room, path.Rooms, end)
+
+		// if room == "h" {
+		//     fmt.Printf("If room is h\n")
+		//     log.Printf("Paths: %#v", path.Rooms)
+		//     log.Printf("Visited: %#v", visited)
+		//     log.Printf("Room: %v", room)
+		//     fmt.Println()
+		// }
 
 		if end && path.Rooms != nil {
 			paths = append(paths, path)
 		}
 	}
-
+	//log.Printf("All paths found: %v", paths)
 	return paths
 }
 
@@ -96,18 +106,17 @@ func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][
 	rooms := nodes[startRoom]
 
 	for _, room := range rooms {
-		if startRoom == "k" {
-			log.Printf("Path yeilded from 0: %#v", path.Rooms)
-			log.Printf("Visited: %#v", visited)
-		}
 		// Ignore visited rooms and links to start room
 		if Discovered(*visited, room) || room == startRoom {
 			continue
 		}
 
 		// Break loop when end room is encountered; end of path
-		if room == endRoom {
-			path.Rooms = append(path.Rooms, endRoom)
+		if room == endRoom || end {
+			if end {
+				break
+			}
+			path.Rooms = append(path.Rooms, room)
 			end = true
 			break
 		}

@@ -196,6 +196,48 @@ func TestFindPaths_MaintainRoomOrder(t *testing.T) {
 	}
 }
 
+func TestFindPaths_Exampl01(t *testing.T) {
+	nodes := map[string][]string{
+		"0":     {"o", "start"},
+		"A":     {"c", "h"},
+		"E":     {"a", "t"},
+		"a":     {"m", "E"},
+		"c":     {"A", "k"},
+		"e":     {"n", "end"},
+		"end":   {"k", "m", "e"},
+		"h":     {"start", "A", "n"},
+		"k":     {"end", "c"},
+		"m":     {"a", "end", "n"},
+		"n":     {"e", "o", "m", "h"},
+		"o":     {"0", "n"},
+		"start": {"t", "h", "0"},
+		"t":     {"start", "E"},
+	}
+	startRoom := "start"
+	endRoom := "end"
+
+	paths := utils.FindPaths(startRoom, endRoom, nodes)
+
+	expectedPaths := []models.Path{}
+	expectedResult := [][]string{
+		{"t", "E", "a", "m", "end"},
+		{"h", "A", "c", "k", "end"},
+		{"0", "o", "n", "e", "end"},
+	}
+	for i := range expectedResult {
+		expectedPaths = append(expectedPaths, models.Path{Rooms: expectedResult[i]})
+	}
+
+	if len(paths) != len(expectedPaths) {
+		t.Errorf("Expected %d paths, but got %d", len(expectedPaths), len(paths))
+	}
+
+	for i, expectedPath := range expectedPaths {
+		if !reflect.DeepEqual(paths[i], expectedPath) {
+			t.Errorf("Path %d: expected %#v, but got %#v", i, expectedPath.Rooms, paths[i].Rooms)
+		}
+	}
+}
 func TestAsignNodes_EmptyLinks(t *testing.T) {
 	links := []models.Link{}
 
