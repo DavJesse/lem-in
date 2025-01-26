@@ -10,7 +10,17 @@ import (
 func MoveAnts(paths []models.Path) []string {
 	var line []string
 	var movements []string
-	scope := len(paths[len(paths)-1].Rooms) + 1 // Length of longest path, add 1 to include start room
+	var scope int
+	longestPathSize := len(paths[len(paths)-1].Rooms) + 1 // Length of longest path, add 1 to include start room
+	mostAntsinPath := MostAntsInPath(paths)
+	overLap := mostAntsinPath - (longestPathSize - 2) // Incase ants overwhelm path size
+
+	// Define scope
+	if longestPathSize > mostAntsinPath {
+		scope = longestPathSize
+	} else {
+		scope = mostAntsinPath + overLap
+	}
 
 	// Try different positions to map valid movements of ants
 	for pathInd := 1; pathInd <= scope; pathInd++ {
@@ -32,6 +42,17 @@ func MoveAnts(paths []models.Path) []string {
 
 	}
 	return movements
+}
+
+func MostAntsInPath(paths []models.Path) int {
+	var max int
+	for i, path := range paths {
+		if len(path.Ants) > max {
+			max = i
+		}
+	}
+
+	return len(paths[max].Ants)
 }
 
 // Prints out ant movement to terminal
