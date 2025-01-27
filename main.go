@@ -60,7 +60,7 @@ func main() {
 	fmt.Println()
 
 	// Extract moves
-	moves := utils.MoveAnts(paths)
+	moves := utils.MoveAnts(paths, ants)
 
 	// Simuluate ant movement
 	utils.SimulateMovement(moves)
