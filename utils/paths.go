@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 
 	"lemin/models"
@@ -25,6 +26,7 @@ func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []mo
 
 	rooms := nodes[startRoom]
 	visited := []string{startRoom}
+	log.Printf("Rooms connected to start: %#v", rooms)
 
 	// Explore rooms liked to start room
 	for _, room := range rooms {
@@ -36,6 +38,7 @@ func FindPaths(startRoom string, endRoom string, nodes map[string][]string) []mo
 			paths = append(paths, path)
 			continue
 		}
+
 		// Abandon paths with visited rooms
 		if Discovered(visited, room) {
 			continue
@@ -100,8 +103,19 @@ func AsignNodes(links []models.Link) map[string][]string {
 func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][]string, path models.Path) (models.Path, bool) {
 	var end bool
 	rooms := nodes[startRoom]
-
+	if startRoom == "2" {
+		log.Printf("Connected to %v: %v", startRoom, rooms)
+		log.Printf("Visited: %#v", visited)
+		log.Printf("Path so far: %v", path.Rooms)
+		fmt.Println()
+	}
 	for _, room := range rooms {
+		if room == "5" {
+			log.Printf("Current Room: %v", room)
+			log.Printf("Path so far: %v", path.Rooms)
+			log.Printf("Visited: %#v", visited)
+			log.Printf("End: %t", end)
+		}
 		// Ignore visited rooms and links to start room
 		if Discovered(*visited, room) || room == startRoom {
 			continue
@@ -129,7 +143,7 @@ func UpdatePath(startRoom, endRoom string, visited *[]string, nodes map[string][
 
 	// Return nil path for hanging paths; i.e not connected to end
 	if !end {
-		return models.Path{}, true
+		return models.Path{}, false
 	}
 
 	return path, end
