@@ -10,7 +10,16 @@ import (
 func MoveAnts(paths []models.Path, ants int) []string {
 	var line []string
 	var movements []string
-	scope := (ants * 2) - 2
+	var scope int
+	longestPath := len(paths[len(paths)-1].Rooms) + 1
+	maxTurns := (ants * 2) - 2
+
+	// Define scope of trying ant movements
+	if longestPath > maxTurns {
+		scope = longestPath
+	} else {
+		scope = maxTurns
+	}
 
 	// Try different positions to map valid movements of ants
 	for pathInd := 1; pathInd <= scope; pathInd++ {
