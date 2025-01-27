@@ -17,7 +17,7 @@ func TestMoveAnts_SinglePathOneAntOneRoom(t *testing.T) {
 	}
 
 	expected := []string{"L1-End"}
-	result := utils.MoveAnts(paths)
+	result := utils.MoveAnts(paths, 1)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("MoveAnts() = %v, want %v", result, expected)
@@ -43,7 +43,7 @@ func TestMoveAnts_MultiplePaths(t *testing.T) {
 		"L2-end L3-end",
 	}
 
-	result := utils.MoveAnts(paths)
+	result := utils.MoveAnts(paths, 3)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("MoveAnts() = %#v, want %#v", result, expected)
@@ -70,7 +70,7 @@ func TestMoveAnts(t *testing.T) {
 		"L2-end",
 	}
 
-	result := utils.MoveAnts(paths)
+	result := utils.MoveAnts(paths, 3)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("MoveAnts() = %#v, want %#v", result, expected)
@@ -97,7 +97,7 @@ func TestMoveAnts_WithEqualPathLengths(t *testing.T) {
 		"L2-end",
 	}
 
-	result := utils.MoveAnts(paths)
+	result := utils.MoveAnts(paths, 3)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("MoveAnts() = %#v, want %#v", result, expected)
