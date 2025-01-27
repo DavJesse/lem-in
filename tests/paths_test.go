@@ -196,33 +196,23 @@ func TestFindPaths_MaintainRoomOrder(t *testing.T) {
 	}
 }
 
-func TestFindPaths_Exampl01(t *testing.T) {
+func TestFindPaths_Example03(t *testing.T) {
 	nodes := map[string][]string{
-		"0":     {"o", "start"},
-		"A":     {"c", "h"},
-		"E":     {"a", "t"},
-		"a":     {"m", "E"},
-		"c":     {"A", "k"},
-		"e":     {"n", "end"},
-		"end":   {"k", "m", "e"},
-		"h":     {"start", "A", "n"},
-		"k":     {"end", "c"},
-		"m":     {"a", "end", "n"},
-		"n":     {"e", "o", "m", "h"},
-		"o":     {"0", "n"},
-		"start": {"t", "h", "0"},
-		"t":     {"start", "E"},
+		"0": {"1", "2", "3"},
+		"1": {"0", "4"},
+		"2": {"0", "4"},
+		"3": {"0", "4"},
+		"4": {"1", "2", "3", "5"},
+		"5": {"4"},
 	}
-	startRoom := "start"
-	endRoom := "end"
+	startRoom := "0"
+	endRoom := "5"
 
 	paths := utils.FindPaths(startRoom, endRoom, nodes)
 
 	expectedPaths := []models.Path{}
 	expectedResult := [][]string{
-		{"t", "E", "a", "m", "end"},
-		{"h", "A", "c", "k", "end"},
-		{"0", "o", "n", "e", "end"},
+		{"1", "4", "5"},
 	}
 	for i := range expectedResult {
 		expectedPaths = append(expectedPaths, models.Path{Rooms: expectedResult[i]})
